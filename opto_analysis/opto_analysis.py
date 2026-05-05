@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Optogenetics Analysis Pipeline
+Bilateral Optogenetics Analysis Pipeline
 
 Analyzes behavioral data from the IBL 2-AFC task with bilateral optogenetic
 stimulation delivered via implanted fiber optic cannulae. Supports multiple
@@ -55,6 +55,8 @@ from config import (
     ALL_CONTRASTS, LOW_CONTRASTS, HIGH_CONTRASTS,
     PSYCHO_FIT_KWARGS,
     SESSION_FILTERS,
+    PSYCHOMETRIC_OVERLAY,
+    PSYCHOMETRIC_MEAN_OF_MICE,
 )
 from metadata_all import sessions, find_sessions_by_advanced_criteria
 from helpers import (
@@ -69,7 +71,8 @@ from helpers import (
     calculate_accuracy_bycontrast,
     extract_wheel_trajectory,
     plot_psychometric_curves, plot_bias_shift_comparison, plot_wheel_comparison,
-    plot_bars_by_mouse, auto_ylimits
+    plot_bars_by_mouse, plot_per_mouse_psychometrics,
+    compute_mean_psychometric_across_mice,
 )
 
 
@@ -613,6 +616,11 @@ df_mouse = pd.DataFrame({
 print(f'\nPer-mouse DataFrame ({len(df_mouse)} mice):')
 print(df_mouse.to_string(index=False))
 
+# Floor negative bias values to zero (negative bias is not meaningful here)
+for col in ['Bias_Values_Nonstim_LC', 'Bias_Values_Stim_LC',
+            'Bias_Values_Nonstim', 'Bias_Values_Stim']:
+    df_mouse[col] = df_mouse[col].clip(lower=0)
+
 
 # =============================================================================
 # PLOTTING
@@ -627,11 +635,17 @@ if SESSION_FILTERS.get('Brain_Region') and not callable(SESSION_FILTERS['Brain_R
 
 # 1. Concatenated psychometric curves (with trial/mouse count annotation)
 if stim_trials_master is not None:
-    stim_master_contrast = signed_contrast(stim_trials_master)
-    nonstim_master_contrast = signed_contrast(nonstim_trials_master)
-
-    stim_psycho_master = organize_psychodata(stim_trials_master, stim_master_contrast)
-    nonstim_psycho_master = organize_psychodata(nonstim_trials_master, nonstim_master_contrast)
+    if PSYCHOMETRIC_MEAN_OF_MICE:
+        # Mean-of-mice: average each mouse's psychometric points, then plot
+        stim_psycho_master, nonstim_psycho_master = compute_mean_psychometric_across_mice(
+            mouse_trials_container, PSYCHO_FIT_KWARGS
+        )
+    else:
+        # Pooled: fit single psychometric to all concatenated trials
+        stim_master_contrast = signed_contrast(stim_trials_master)
+        nonstim_master_contrast = signed_contrast(nonstim_trials_master)
+        stim_psycho_master = organize_psychodata(stim_trials_master, stim_master_contrast)
+        nonstim_psycho_master = organize_psychodata(nonstim_trials_master, nonstim_master_contrast)
 
     plot_psychometric_curves(
         stim_psycho_master, nonstim_psycho_master, PSYCHO_FIT_KWARGS,
@@ -641,6 +655,7 @@ if stim_trials_master is not None:
         n_stim_trials=sum(stim_trials_per_session),
         n_nonstim_trials=sum(nonstim_trials_per_session),
         n_mice=num_unique_mice,
+        overlay=PSYCHOMETRIC_OVERLAY,
     )
 
 # 2. Bias shift comparison (per-session paired)
@@ -684,24 +699,32 @@ else:
 if len(df_mouse) >= 2:
     bar_save = str(FIGURE_SAVE_PATH) if SAVE_FIGURES else None
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'Bias_Values_Nonstim_LC', 'Bias_Values_Stim_LC'), mode='Bias_LC',
+    plot_bars_by_mouse(df_mouse, mode='Bias_LC',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'Bias_Values_Nonstim', 'Bias_Values_Stim'), mode='Bias_All',
+    plot_bars_by_mouse(df_mouse, mode='Bias_All',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'Accuracy_HC_Control', 'Accuracy_HC_Stim'), mode='Accuracy_HC',
+    plot_bars_by_mouse(df_mouse, mode='Accuracy_HC',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'Accuracy_0_Control', 'Accuracy_0_Stim'), mode='Accuracy_0',
+    plot_bars_by_mouse(df_mouse, mode='Accuracy_0',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'RT_Control', 'RT_Stim'), mode='RT',
+    plot_bars_by_mouse(df_mouse, mode='RT',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 
-    plot_bars_by_mouse(df_mouse, auto_ylimits(df_mouse, 'QP_Control', 'QP_Stim'), mode='QP',
+    plot_bars_by_mouse(df_mouse, mode='QP',
                        save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
 else:
     print('\nNot enough mice (need >= 2) for per-mouse bar plots.')
+
+# 6. Per-mouse psychometric curves (grid)
+if len(mouse_trials_container) > 0:
+    plot_per_mouse_psychometrics(
+        mouse_trials_container, PSYCHO_FIT_KWARGS,
+        title=title_text,
+        save_path=f'{save_prefix}_psychometric_per_mouse.png' if save_prefix else None,
+    )
 
 print('\nDone.')

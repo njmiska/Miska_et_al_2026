@@ -998,10 +998,91 @@ def calculate_accuracy_bycontrast(trials_bunch, contrast_mask):
     return np.sum(feedback == 1) / n_trials
 
 
+def compute_mean_psychometric_across_mice(mouse_trials_container, fit_kwargs):
+    """
+    Compute mean psychometric data points across mice (mean-of-means).
+
+    For each mouse, computes proportion rightward at each contrast for each
+    block, then averages those proportions across mice. This gives each mouse
+    equal weight regardless of trial count.
+
+    Parameters
+    ----------
+    mouse_trials_container : dict
+        Keys are mouse IDs, values are dicts with 'stim' and 'nonstim' Bunch.
+    fit_kwargs : dict
+        Psychometric fit parameters (used for fitting the averaged points).
+
+    Returns
+    -------
+    stim_mean_data : dict
+        Keys are pL values (0.2, 0.8), values are (3, n_contrasts) arrays
+        of [contrasts, total_n, mean_proportion_rightward].
+    nonstim_mean_data : dict
+        Same structure for nonstim.
+    """
+    # Standard contrast set
+    contrast_levels = np.array([-100., -25., -12.5, -6.25, 0., 6.25, 12.5, 25., 100.])
+    blocks = [0.2, 0.8]
+
+    results = {}
+    for condition in ['stim', 'nonstim']:
+        for pL in blocks:
+            # Collect proportion rightward at each contrast for each mouse
+            per_mouse_proportions = []
+
+            for mouse_id, data in mouse_trials_container.items():
+                bunch = data[condition]
+                if len(bunch.contrastLeft) < 20:
+                    continue
+
+                contrast_arr = signed_contrast(bunch)
+                in_block = bunch.probabilityLeft == pL
+                rightward = bunch.choice == -1
+
+                mouse_props = []
+                for c in contrast_levels:
+                    mask = (contrast_arr == c) & in_block
+                    n = np.sum(mask)
+                    if n > 0:
+                        mouse_props.append(np.mean(rightward[mask]))
+                    else:
+                        mouse_props.append(np.nan)
+
+                per_mouse_proportions.append(mouse_props)
+
+            if len(per_mouse_proportions) == 0:
+                continue
+
+            prop_array = np.array(per_mouse_proportions)  # (n_mice, n_contrasts)
+            mean_props = np.nanmean(prop_array, axis=0)
+            # Count how many mice contributed at each contrast (for n)
+            n_per_contrast = np.sum(~np.isnan(prop_array), axis=0)
+
+            # Remove contrasts with no data
+            valid = ~np.isnan(mean_props)
+            results[(condition, pL)] = np.vstack((
+                contrast_levels[valid],
+                n_per_contrast[valid],
+                mean_props[valid],
+            ))
+
+    # Package into the same format as organize_psychodata output
+    stim_mean_data = {}
+    nonstim_mean_data = {}
+    for pL in blocks:
+        if ('stim', pL) in results:
+            stim_mean_data[pL] = results[('stim', pL)]
+        if ('nonstim', pL) in results:
+            nonstim_mean_data[pL] = results[('nonstim', pL)]
+
+    return stim_mean_data, nonstim_mean_data
+
+
 def plot_psychometric_curves(stim_data, nonstim_data, fit_kwargs, title='',
                              save_path=None, plot_for_paper=False,
                              n_stim_trials=None, n_nonstim_trials=None,
-                             n_mice=None):
+                             n_mice=None, overlay=False):
     """
     Plot psychometric curves for stim and nonstim conditions, split by block.
 
@@ -1025,35 +1106,72 @@ def plot_psychometric_curves(stim_data, nonstim_data, fit_kwargs, title='',
         Total nonstim trials for annotation.
     n_mice : int or None
         Number of unique mice for annotation.
+    overlay : bool
+        If True, plot stim and nonstim on a single axis (stim = dashed,
+        distinct colors). If False, two side-by-side axes.
     """
-    colours = {0.2: 'xkcd:tangerine', 0.8: 'xkcd:violet', 0.5: 'k'}
+    ctrl_colours = {0.2: 'xkcd:tangerine', 0.8: 'xkcd:violet', 0.5: 'k'}
+    stim_colours = {0.2: 'xkcd:red', 0.8: 'xkcd:red'}#'grey', 0.5: 'k'}
     x_fit = np.arange(-100, 100)
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    if overlay:
+        fig, ax = plt.subplots(figsize=(4, 4))
 
-    for ax, data, label in [(ax1, nonstim_data, 'Nonstim'), (ax2, stim_data, 'Stim')]:
-        for pL, da in data.items():
-            if da.shape[1] < 2:
-                continue
-            try:
-                pars, L = psy.mle_fit_psycho(da, 'erf_psycho_2gammas', **fit_kwargs)
-                ax.plot(da[0, :], da[2, :], 'o', color=colours.get(pL, 'grey'))
-                ax.plot(x_fit, psy.erf_psycho_2gammas(pars, x_fit),
-                        color=colours.get(pL, 'grey'),
-                        label=f'{int(pL * 100)}% left')
-            except Exception:
-                ax.plot(da[0, :], da[2, :], 'o', color=colours.get(pL, 'grey'))
+        for data, linestyle, cond_label, colour_map in [
+            (stim_data, '--', 'stim', stim_colours),
+            (nonstim_data, '-', 'ctrl', ctrl_colours),
+        ]:
+            for pL, da in data.items():
+                if da.shape[1] < 2:
+                    continue
+                color = colour_map.get(pL, 'grey')
+                block_label = f'{int(pL * 100)}% left'
+                try:
+                    pars, L = psy.mle_fit_psycho(da, 'erf_psycho_2gammas', **fit_kwargs)
+                    ax.plot(da[0, :], da[2, :], 'o', color=color,
+                            markersize=5, alpha=0.7)
+                    ax.plot(x_fit, psy.erf_psycho_2gammas(pars, x_fit),
+                            color=color, linestyle=linestyle, linewidth=1.8,
+                            label=f'{block_label} {cond_label}')
+                except Exception:
+                    ax.plot(da[0, :], da[2, :], 'o', color=color,
+                            markersize=5, alpha=0.7)
 
-        ax.set_title(f'{label} — {title}')
+        ax.set_title(title)
         ax.set_xlabel('Contrast (%)')
-        ax.set_ylabel('Proportion rightward')
+        ax.set_ylabel('Proportion Leftward')
         ax.axhline(0.5, color='k', linestyle=':', alpha=0.5)
         ax.axvline(0, color='k', linestyle=':', alpha=0.5)
         ax.set_ylim(-0.05, 1.05)
-        ax.legend()
+        ax.legend(fontsize=8)
         sns.despine(ax=ax, offset=10, trim=True)
 
-    # Add trial/mouse count annotation
+    else:
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+        for ax, data, label in [(ax1, nonstim_data, 'Nonstim'), (ax2, stim_data, 'Stim')]:
+            for pL, da in data.items():
+                if da.shape[1] < 2:
+                    continue
+                try:
+                    pars, L = psy.mle_fit_psycho(da, 'erf_psycho_2gammas', **fit_kwargs)
+                    ax.plot(da[0, :], da[2, :], 'o', color=ctrl_colours.get(pL, 'grey'))
+                    ax.plot(x_fit, psy.erf_psycho_2gammas(pars, x_fit),
+                            color=ctrl_colours.get(pL, 'grey'),
+                            label=f'{int(pL * 100)}% left')
+                except Exception:
+                    ax.plot(da[0, :], da[2, :], 'o', color=ctrl_colours.get(pL, 'grey'))
+
+            ax.set_title(f'{label} — {title}')
+            ax.set_xlabel('Contrast (%)')
+            ax.set_ylabel('Proportion rightward')
+            ax.axhline(0.5, color='k', linestyle=':', alpha=0.5)
+            ax.axvline(0, color='k', linestyle=':', alpha=0.5)
+            ax.set_ylim(-0.05, 1.05)
+            ax.legend()
+            sns.despine(ax=ax, offset=10, trim=True)
+
+    # Trial/mouse count annotation
     annotation_parts = []
     if n_mice is not None:
         annotation_parts.append(f'n = {n_mice} mice')
@@ -1183,21 +1301,20 @@ def plot_wheel_comparison(Rblock_stim, Lblock_stim, Rblock_nonstim, Lblock_nonst
         plt.show()
 
 
-def plot_bars_by_mouse(mouse_df, y_limits, mode='Bias_LC',
+def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
                        save_path=None, prefix='', stim_label='Stim'):
     """
     Plot paired bar + line chart comparing control vs stim per mouse.
 
     Each mouse is a connected dot-pair overlaid on group mean bars with SEM
-    error bars. A paired t-test p-value is annotated.
+    error bars. P-value is printed to terminal (not drawn on figure).
 
     Parameters
     ----------
     mouse_df : DataFrame
         Per-mouse summary with columns for control and stim values.
-        Expected column names depend on `mode` (see below).
-    y_limits : array-like
-        [ymin, ymax] for the plot.
+    y_limits : array-like or None
+        [ymin, ymax] for the plot. If None, auto-scales to [0, max + 5%].
     mode : str
         Which metric to plot. One of:
         'Bias_LC', 'Bias_All', 'Accuracy_HC', 'Accuracy_0', 'RT', 'QP'
@@ -1217,37 +1334,31 @@ def plot_bars_by_mouse(mouse_df, y_limits, mode='Bias_LC',
         'Bias_LC': {
             'col_ctrl': 'Bias_Values_Nonstim_LC',
             'col_stim': 'Bias_Values_Stim_LC',
-            'title': 'Bias Shift (Low Contrast)',
-            'ylabel': 'Bias shift',
+            'ylabel': 'Bias shift (low contrast)',
         },
         'Bias_All': {
             'col_ctrl': 'Bias_Values_Nonstim',
             'col_stim': 'Bias_Values_Stim',
-            'title': 'Bias Shift (All Contrasts)',
-            'ylabel': 'Bias shift',
+            'ylabel': 'Bias shift (all contrasts)',
         },
         'Accuracy_HC': {
             'col_ctrl': 'Accuracy_HC_Control',
             'col_stim': 'Accuracy_HC_Stim',
-            'title': 'High Contrast Accuracy',
-            'ylabel': 'Accuracy',
+            'ylabel': 'High contrast accuracy',
         },
         'Accuracy_0': {
             'col_ctrl': 'Accuracy_0_Control',
             'col_stim': 'Accuracy_0_Stim',
-            'title': 'Zero Contrast Accuracy',
-            'ylabel': 'Accuracy',
+            'ylabel': 'Zero contrast accuracy',
         },
         'RT': {
             'col_ctrl': 'RT_Control',
             'col_stim': 'RT_Stim',
-            'title': 'Reaction Time',
             'ylabel': 'Reaction time (s)',
         },
         'QP': {
             'col_ctrl': 'QP_Control',
             'col_stim': 'QP_Stim',
-            'title': 'Quiescence Time',
             'ylabel': 'Quiescence time (s)',
         },
     }
@@ -1270,16 +1381,17 @@ def plot_bars_by_mouse(mouse_df, y_limits, mode='Bias_LC',
         print(f"Not enough mice for paired test in mode '{mode}' (n={n_mice})")
         return np.nan
 
-    # Paired t-test
+    # Paired t-test (print to terminal, not on figure)
     t_stat, p_val = stats.ttest_rel(ctrl_vals, stim_vals)
+    print(f"  {cfg['ylabel']}: p = {p_val:.4f} (t = {t_stat:.3f}, n = {n_mice})")
 
-    # Plot
-    plt.figure(figsize=(4, 5))
+    # Plot — narrow figure
+    plt.figure(figsize=(2.2, 4.5))
 
     # Individual mice (spaghetti lines)
     for i in range(n_mice):
         plt.plot([0, 1], [ctrl_vals[i], stim_vals[i]],
-                 color='gray', alpha=0.5, linewidth=1, marker='o', markersize=5)
+                 color='gray', alpha=0.5, linewidth=1, marker='o', markersize=4)
 
     # Group mean bars
     mean_ctrl = np.mean(ctrl_vals)
@@ -1287,23 +1399,28 @@ def plot_bars_by_mouse(mouse_df, y_limits, mode='Bias_LC',
     sem_ctrl = stats.sem(ctrl_vals)
     sem_stim = stats.sem(stim_vals)
 
-    plt.bar(0, mean_ctrl, color='black', alpha=0.3, width=0.6, label='Control')
-    plt.bar(1, mean_stim, color='blue', alpha=0.3, width=0.6, label=stim_label)
+    plt.bar(0, mean_ctrl, color='black', alpha=1, width=0.6)
+    plt.bar(1, mean_stim, color='red', alpha=1, width=0.6)
 
     # Error bars on means
-    plt.errorbar(0, mean_ctrl, yerr=sem_ctrl, color='black', linewidth=3, capsize=5)
-    plt.errorbar(1, mean_stim, yerr=sem_stim, color='blue', linewidth=3, capsize=5)
+    plt.errorbar(0, mean_ctrl, yerr=sem_ctrl, color='black', linewidth=2.5, capsize=4)
+    plt.errorbar(1, mean_stim, yerr=sem_stim, color='black', linewidth=2.5, capsize=4)
 
     # Aesthetics
-    plt.xticks([0, 1], ['Control', stim_label])
-    plt.ylabel(cfg['ylabel'])
-    plt.title(f"{cfg['title']}\n(n={n_mice} mice)")
-    plt.xlim(-0.6, 1.6)
-    plt.ylim(y_limits[0], y_limits[1])
+    plt.xticks([0, 1], ['Control', stim_label], fontsize=8)
+    plt.ylabel(cfg['ylabel'], fontsize=9)
+    plt.xlim(-0.5, 1.5)
 
-    # P-value annotation
-    y_max = max(np.max(ctrl_vals), np.max(stim_vals))
-    plt.text(0.5, y_max * 1.05, f'p = {p_val:.4f}', ha='center', fontsize=12)
+    # Auto y-limits: [0, max_data * 1.05]
+    if y_limits is not None:
+        plt.ylim(y_limits[0], y_limits[1])
+    else:
+        data_max = max(np.max(ctrl_vals), np.max(stim_vals))
+        data_min = min(np.min(ctrl_vals), np.min(stim_vals))
+        y_top = data_max + abs(data_max) * 0.05
+        # Use 0 as floor unless data goes negative
+        y_bottom = 0 if data_min >= 0 else data_min - abs(data_min) * 0.05
+        plt.ylim(y_bottom, y_top)
 
     sns.despine()
     plt.tight_layout()
@@ -1311,17 +1428,128 @@ def plot_bars_by_mouse(mouse_df, y_limits, mode='Bias_LC',
     if save_path:
         fname = f"{save_path}/{prefix}_PerMouse_{mode}.png"
         plt.savefig(fname, dpi=150, bbox_inches='tight')
-        print(f"Saved: {fname}")
         plt.close()
     else:
         plt.show()
 
     return p_val
 
-def auto_ylimits(df, col_ctrl, col_stim, padding_frac=0.1):
-    """Compute y-limits from data with padding."""
-    all_vals = pd.concat([df[col_ctrl], df[col_stim]]).dropna()
-    ymin = all_vals.min()
-    ymax = all_vals.max()
-    margin = (ymax - ymin) * padding_frac
-    return [ymin - margin, ymax + margin]
+
+def plot_per_mouse_psychometrics(mouse_trials_container, fit_kwargs,
+                                 title='', save_path=None):
+    """
+    Plot psychometric curves for each mouse in a multi-panel grid.
+
+    Each subplot shows stim and nonstim psychometric curves (split by block)
+    for one mouse, with trial count annotations.
+
+    Parameters
+    ----------
+    mouse_trials_container : dict
+        Keys are mouse IDs, values are dicts with 'stim' and 'nonstim' Bunch objects.
+    fit_kwargs : dict
+        Psychometric fit parameters.
+    title : str
+        Super-title for the figure.
+    save_path : str or None
+        Path to save figure. None = show interactively.
+    """
+    mouse_ids = list(mouse_trials_container.keys())
+    n_mice = len(mouse_ids)
+
+    if n_mice == 0:
+        print("No mice to plot.")
+        return
+
+    # Grid layout: aim for roughly square
+    n_cols = min(4, n_mice)
+    n_rows = int(np.ceil(n_mice / n_cols))
+
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(5 * n_cols, 4.5 * n_rows),
+                             squeeze=False)
+
+    ctrl_colours = {0.2: 'xkcd:tangerine', 0.8: 'xkcd:violet'}
+    stim_colours = {0.2: 'xkcd:red', 0.8: 'grey'}
+    x_fit = np.arange(-100, 100)
+
+    for idx, mouse_id in enumerate(mouse_ids):
+        row = idx // n_cols
+        col = idx % n_cols
+        ax = axes[row, col]
+
+        stim_bunch = mouse_trials_container[mouse_id]['stim']
+        nonstim_bunch = mouse_trials_container[mouse_id]['nonstim']
+
+        n_stim = len(stim_bunch.contrastLeft)
+        n_nonstim = len(nonstim_bunch.contrastLeft)
+
+        stim_c = signed_contrast(stim_bunch)
+        nonstim_c = signed_contrast(nonstim_bunch)
+
+        # Plot nonstim (solid) and stim (dashed)
+        for bunch, contrast_arr, linestyle, condition_label, colour_map in [
+            (nonstim_bunch, nonstim_c, '-', 'ctrl', ctrl_colours),
+            (stim_bunch, stim_c, '--', 'stim', stim_colours),
+        ]:
+            data = organize_psychodata(bunch, contrast_arr)
+            for pL, da in data.items():
+                if da.shape[1] < 2:
+                    continue
+                color = colour_map.get(pL, 'grey')
+                try:
+                    pars, L = psy.mle_fit_psycho(da, 'erf_psycho_2gammas', **fit_kwargs)
+                    ax.plot(da[0, :], da[2, :], 'o', color=color,
+                            markersize=4, alpha=0.7)
+                    ax.plot(x_fit, psy.erf_psycho_2gammas(pars, x_fit),
+                            color=color, linestyle=linestyle, linewidth=1.5)
+                except Exception:
+                    ax.plot(da[0, :], da[2, :], 'o', color=color,
+                            markersize=4, alpha=0.7)
+
+        ax.axhline(0.5, color='k', linestyle=':', alpha=0.3, linewidth=0.8)
+        ax.axvline(0, color='k', linestyle=':', alpha=0.3, linewidth=0.8)
+        ax.set_ylim(-0.05, 1.05)
+        ax.set_xlim(-110, 110)
+        ax.set_title(mouse_id, fontsize=11, fontweight='bold')
+        ax.text(0.5, 0.02, f'{n_nonstim} ctrl | {n_stim} stim',
+                transform=ax.transAxes, ha='center', fontsize=8,
+                style='italic', color='grey')
+
+        if col == 0:
+            ax.set_ylabel('P(rightward)', fontsize=9)
+        else:
+            ax.set_yticklabels([])
+        if row == n_rows - 1:
+            ax.set_xlabel('Contrast (%)', fontsize=9)
+        else:
+            ax.set_xticklabels([])
+
+        sns.despine(ax=ax, offset=5, trim=True)
+
+    # Hide unused subplots
+    for idx in range(n_mice, n_rows * n_cols):
+        row = idx // n_cols
+        col = idx % n_cols
+        axes[row, col].set_visible(False)
+
+    # Legend (once, in the first subplot)
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], color='xkcd:violet', linestyle='-', label='80% left ctrl'),
+        Line2D([0], [0], color='xkcd:tangerine', linestyle='-', label='20% left ctrl'),
+        Line2D([0], [0], color='grey', linestyle='--', label='80% left stim'),
+        Line2D([0], [0], color='xkcd:red', linestyle='--', label='20% left stim'),
+    ]
+    axes[0, 0].legend(handles=legend_elements, fontsize=7, loc='upper left',
+                      framealpha=0.8)
+
+    if title:
+        fig.suptitle(title, fontsize=14, fontweight='bold', y=1.01)
+
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        print(f"Saved: {save_path}")
+        plt.close()
+    else:
+        plt.show()
