@@ -1147,7 +1147,7 @@ def plot_psychometric_curves(stim_data, nonstim_data, fit_kwargs, title='',
         sns.despine(ax=ax, offset=10, trim=True)
 
     else:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
         for ax, data, label in [(ax1, nonstim_data, 'Nonstim'), (ax2, stim_data, 'Stim')]:
             for pL, da in data.items():
@@ -1386,7 +1386,8 @@ def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
     print(f"  {cfg['ylabel']}: p = {p_val:.4f} (t = {t_stat:.3f}, n = {n_mice})")
 
     # Plot — narrow figure
-    plt.figure(figsize=(2.2, 4.5))
+    plt.figure(figsize=(1.9, 4.5))
+    # plt.figure(figsize=(2.2, 4.5))
 
     # Individual mice (spaghetti lines)
     for i in range(n_mice):
@@ -1399,8 +1400,8 @@ def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
     sem_ctrl = stats.sem(ctrl_vals)
     sem_stim = stats.sem(stim_vals)
 
-    plt.bar(0, mean_ctrl, color='black', alpha=1, width=0.6)
-    plt.bar(1, mean_stim, color='red', alpha=1, width=0.6)
+    plt.bar(0, mean_ctrl, color='black', alpha=0.7, width=0.6)
+    plt.bar(1, mean_stim, color='red', alpha=0.7, width=0.6)
 
     # Error bars on means
     plt.errorbar(0, mean_ctrl, yerr=sem_ctrl, color='black', linewidth=2.5, capsize=4)

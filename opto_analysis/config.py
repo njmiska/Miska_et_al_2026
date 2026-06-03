@@ -65,10 +65,10 @@ GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pk
 
 # Minimum performance at high contrasts (100%, 25%) on NONSTIM trials to include session
 # Set to 0 when using GLM-HMM (engagement filtering replaces performance gating)
-BASELINE_PERFORMANCE_THRESHOLD = 0.8
+BASELINE_PERFORMANCE_THRESHOLD = 0.7
 
 # Minimum performance on STIM trials at high contrasts
-STIM_PERFORMANCE_THRESHOLD = 0.8
+STIM_PERFORMANCE_THRESHOLD = 0
 
 # Minimum number of trials required to include session
 MIN_NUM_TRIALS = 0
@@ -156,7 +156,7 @@ PSYCHO_FIT_KWARGS = {
 SAVE_FIGURES = True
 
 # Prefix for saved figure filenames
-FIGURE_PREFIX = 'ZI_all'
+FIGURE_PREFIX = '113_15_05'
 
 # Title text for plots (set automatically from session filters if None)
 TITLE_TEXT = None
@@ -169,7 +169,7 @@ FLAG_FAILED_LOADS = True
 
 # Psychometric plot layout: True = overlay stim (dashed) on nonstim in a single axis
 #                           False = side-by-side axes for stim and nonstim
-PSYCHOMETRIC_OVERLAY = True
+PSYCHOMETRIC_OVERLAY = False
 
 # Psychometric data source: True = average each mouse's psychometric points (mean-of-means)
 #                           False = pool all trials across mice (single fit)
@@ -183,38 +183,38 @@ PSYCHOMETRIC_MEAN_OF_MICE = True
 # Use a specific value for exact match
 # Use a lambda for custom filtering, e.g.: lambda x: x in ['val1', 'val2']
 
-# SESSION_FILTERS = {
+SESSION_FILTERS = {
 
-#     'Stimulation_Params': 'QPRE',
-#     # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
+    'Stimulation_Params': 'QPRE',
+    # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
 
-#     'Mouse_ID': 'SWC_NM_102',
-#     # e.g., 'SWC_NM_099' or lambda x: x in [...]
+    'Mouse_ID': 'SWC_NM_113',
+    # e.g., 'SWC_NM_099' or lambda x: x in [...]
 
-#     'Hemisphere': 'both',
-#     # e.g., 'both', 'left', 'right'
+    'Hemisphere': None,#'left',#'both',
+    # e.g., 'both', 'left', 'right'
 
-#     'Pulse_Params': 'cont',
-#     # e.g., 'cont', '50hz', '20hz', 'cont_c', 'motor_bilateral_mask'
+    'Pulse_Params': 'cont',
+    # e.g., 'cont', '50hz', '20hz', 'cont_c', 'motor_bilateral_mask'
 
-#     'Opsin': None,
-#     # e.g., 'ChR2', 'GtACR2', or lambda x: x in ['ChR2', 'GtACR2']
+    'Opsin': None,
+    # e.g., 'ChR2', 'GtACR2', or lambda x: x in ['ChR2', 'GtACR2']
 
-#     'Genetic_Line': None,
-#     # e.g., 'VGAT-ChR2', 'D1-Cre'
+    'Genetic_Line': None,
+    # e.g., 'VGAT-ChR2', 'D1-Cre'
 
-#     'Brain_Region': None,
-#     # e.g., 'VLS', 'SNr', 'STN', 'ZI', 'motor_bilateral'
+    'Brain_Region': None,
+    # e.g., 'VLS', 'SNr', 'STN', 'ZI', 'motor_bilateral'
 
-#     'Laser_V': None,
-#     # e.g., 2, or lambda x: x >= 1
+    'Laser_V': None,#lambda x: x in ['0.5', '0.7', '1'],
+    # e.g., 2, or lambda x: x >= 1
 
-#     'Date': None,
-#     # e.g., '2024-10-24'
+    'Date': None,
+    # e.g., '2024-10-24'
 
-#     'EID': None,
-#     # Specific session EID(s)
-# }
+    'EID': 'f52e81b7-8db6-4369-a044-26b68a3f8c91',
+    # Specific session EID(s)
+}
 
 
 # ## SNr defaults:
@@ -223,7 +223,7 @@ PSYCHOMETRIC_MEAN_OF_MICE = True
 #     'Stimulation_Params': lambda x: x in ['QPRE', 'QPRE*'],
 #     # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
 
-#     'Mouse_ID': lambda x: x in ['SWC_NM_004', 'SWC_NM_008', 'SWC_NM_011', 'SWC_NM_012', 'SWC_NM_018', 'SWC_NM_016', 'SWC_NM_080', 'SWC_NM_096', 'SWC_NM_113'],
+#     'Mouse_ID': lambda x: x in ['SWC_NM_004', 'SWC_NM_008', 'SWC_NM_011', 'SWC_NM_012', 'SWC_NM_018', 'SWC_NM_016', 'SWC_NM_080', 'SWC_NM_096', 'SWC_NM_103', 'SWC_NM_113'],
 #     # e.g., 'SWC_NM_099' or lambda x: x in [...]
 
 #     'Hemisphere': None,
@@ -252,46 +252,46 @@ PSYCHOMETRIC_MEAN_OF_MICE = True
 # }
 
 
-## ZI defaults:
-SESSION_FILTERS = {
+# ## ZI defaults:
+# SESSION_FILTERS = {
 
-    'Stimulation_Params': lambda x: x in ['QPRE', 'QPRE*'],
-    # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
+#     'Stimulation_Params': lambda x: x in ['QPRE', 'QPRE*'],
+#     # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
 
-    'Mouse_ID': lambda x: x in ['SWC_NM_003', 'SWC_NM_010', 'SWC_NM_022', 'SWC_NM_104', 'SWC_NM_111'],
-    # e.g., 'SWC_NM_099' or lambda x: x in [...]
+#     'Mouse_ID': lambda x: x in ['SWC_NM_003', 'SWC_NM_010', 'SWC_NM_022', 'SWC_NM_104', 'SWC_NM_111'],
+#     # e.g., 'SWC_NM_099' or lambda x: x in [...]
 
-    'Hemisphere': None,
-    # e.g., 'both', 'left', 'right'
+#     'Hemisphere': None,
+#     # e.g., 'both', 'left', 'right'
 
-    'Pulse_Params': 'cont',
-    # e.g., 'cont', '50hz', '20hz', 'cont_c', 'motor_bilateral_mask'
+#     'Pulse_Params': 'cont',
+#     # e.g., 'cont', '50hz', '20hz', 'cont_c', 'motor_bilateral_mask'
 
-    'Opsin': None,
-    # e.g., 'ChR2', 'GtACR2', or lambda x: x in ['ChR2', 'GtACR2']
+#     'Opsin': None,
+#     # e.g., 'ChR2', 'GtACR2', or lambda x: x in ['ChR2', 'GtACR2']
 
-    'Genetic_Line': None,
-    # e.g., 'VGAT-ChR2', 'D1-Cre'
+#     'Genetic_Line': None,
+#     # e.g., 'VGAT-ChR2', 'D1-Cre'
 
-    'Brain_Region': 'ZI',
-    # e.g., 'VLS', 'SNr', 'STN', 'ZI', 'motor_bilateral'
+#     'Brain_Region': 'ZI',
+#     # e.g., 'VLS', 'SNr', 'STN', 'ZI', 'motor_bilateral'
 
-    'Laser_V': None,
-    # e.g., 2, or lambda x: x >= 1
+#     'Laser_V': None,
+#     # e.g., 2, or lambda x: x >= 1
 
-    'Date': None,
-    # e.g., '2024-10-24'
+#     'Date': None,
+#     # e.g., '2024-10-24'
 
-    'EID': None,
-    # Specific session EID(s)
-}
+#     'EID': None,
+#     # Specific session EID(s)
+# }
 
 # ## D1 defaults:
 # SESSION_FILTERS = {
 
 #     'Stimulation_Params': lambda x: x in ['QPRE', 'QPRE*'],
 
-#     'Mouse_ID': lambda x: x in ['SWC_NM_053', 'SWC_NM_038', 'SWC_NM_098', 'SWC_NM_099', 'SWC_NM_100', 'SWC_NM_101', 'SWC_NM_073', 'SWC_NM_105' ],
+#     'Mouse_ID': lambda x: x in ['SWC_NM_053', 'SWC_NM_098', 'SWC_NM_099', 'SWC_NM_100', 'SWC_NM_101', 'SWC_NM_073', 'SWC_NM_105' ],
 
 #     'Hemisphere': None,
 
