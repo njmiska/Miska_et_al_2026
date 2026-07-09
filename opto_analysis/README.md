@@ -46,7 +46,7 @@ opto_analysis/
 | `N_STATES` | Number of GLM-HMM states (2 or 4) | `2` |
 | `STATE_TYPE` | Which state to keep ('engaged', 'disengaged', 'bypass') | `'engaged'` |
 | `STATE_DEF` | State label timing ('current' or 'previous') | `'current'` |
-| `BASELINE_PERFORMANCE_THRESHOLD` | Min accuracy at ±100% contrast | `0.7` |
+| `BASELINE_PERFORMANCE_THRESHOLD` | Min accuracy at ±100% contrast | `0.8` |
 | `MIN_BIAS_THRESHOLD` | Min summed nonstim bias shift to include session | `0.3` |
 | `RT_THRESHOLD` | Max reaction time per trial (seconds) | `30` |
 | `MIN_NUM_TRIALS` | Min trial count to include session | `300` |

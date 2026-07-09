@@ -64,8 +64,8 @@ GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pk
 # =============================================================================
 
 # Minimum performance at 100% contrasts on NONSTIM trials to include session
-# Set to 0 when using GLM-HMM (engagement filtering replaces performance gating)
-BASELINE_PERFORMANCE_THRESHOLD = 0.7
+# Keep in mind that GLM-HMM filtering may already remove most low accuracy trials
+BASELINE_PERFORMANCE_THRESHOLD = 0.8
 
 # Minimum performance on STIM trials at 100% contrasts
 STIM_PERFORMANCE_THRESHOLD = 0
@@ -75,7 +75,7 @@ MIN_NUM_TRIALS = 0
 
 # Minimum baseline (nonstim) bias shift to include session
 # (summed across all contrasts; ensures the mouse is block-engaged)
-MIN_BIAS_THRESHOLD = 1
+MIN_BIAS_THRESHOLD = 0.5
 
 # Maximum reaction time to include trial (seconds)
 # Set high (e.g. 100) when using GLM-HMM to avoid double-filtering
@@ -119,6 +119,22 @@ WHEEL_TIME_INTERVAL = 0.1
 # Alignment point for wheel analysis: 'QP', 'goCue', 'goCue_pre', 'feedback'
 WHEEL_ALIGN_TO = 'QP'
 
+# Display limits for the standard QP-aligned wheel plot.
+WHEEL_QP_X_LIMITS = (0, 3)
+WHEEL_QP_Y_LIMITS = (-1.5, 1.5)
+
+# Additional wheel plot: always output a low-contrast, go-cue-aligned plot
+# spanning this many seconds after go cue. Post-feedback bins are left as NaN
+# by extract_wheel_trajectory, matching the existing choice-period behavior.
+WHEEL_GOCUE_LOW_CONTRAST_DURATION = 3
+
+# Scalar wheel-movement summaries for per-mouse bar plots. Values are sampled
+# as the last finite trajectory value at or before these times.
+WHEEL_QP_SCALAR_TIME = 0.7
+WHEEL_GOCUE_SCALAR_TIME = 0.6
+WHEEL_SCALAR_BAR_FIGSIZE = (4, 4)
+WHEEL_DIFFERENCE_BAR_FIGSIZE = (2, 4)
+
 # Whether to only include low contrast trials in wheel analysis
 ONLY_LOW_CONTRASTS = False
 
@@ -156,7 +172,7 @@ PSYCHO_FIT_KWARGS = {
 SAVE_FIGURES = True
 
 # Prefix for saved figure filenames
-FIGURE_PREFIX = '113_15_05'
+FIGURE_PREFIX = '110'
 
 # Title text for plots (set automatically from session filters if None)
 TITLE_TEXT = None
@@ -188,7 +204,7 @@ SESSION_FILTERS = {
     'Stimulation_Params': 'QPRE',
     # Stimulation timing: 'QPRE', 'SORE', 'QP', 'ITI', or lambda
 
-    'Mouse_ID': 'SWC_NM_113',
+    'Mouse_ID': 'SWC_NM_110',
     # e.g., 'SWC_NM_099' or lambda x: x in [...]
 
     'Hemisphere': None,#'left',#'both',
@@ -212,7 +228,7 @@ SESSION_FILTERS = {
     'Date': None,
     # e.g., '2024-10-24'
 
-    'EID': 'f52e81b7-8db6-4369-a044-26b68a3f8c91',
+    'EID': None,
     # Specific session EID(s)
 }
 
@@ -226,7 +242,7 @@ SESSION_FILTERS = {
 #     'Mouse_ID': lambda x: x in ['SWC_NM_004', 'SWC_NM_008', 'SWC_NM_011', 'SWC_NM_012', 'SWC_NM_018', 'SWC_NM_016', 'SWC_NM_080', 'SWC_NM_096', 'SWC_NM_103', 'SWC_NM_113'],
 #     # e.g., 'SWC_NM_099' or lambda x: x in [...]
 
-#     'Hemisphere': None,
+#     'Hemisphere': 'right',
 #     # e.g., 'both', 'left', 'right'
 
 #     'Pulse_Params': 'cont',

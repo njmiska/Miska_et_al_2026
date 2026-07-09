@@ -926,27 +926,44 @@ def extract_wheel_trajectory(trials, trial_num, whlpos, whlt, align_to='QP',
     n_bins = int(duration / interval)
     trajectory = np.full(n_bins, np.nan)
 
+    stop_time = np.nan
+    if align_to == 'QP':
+        try:
+            stop_time = trials.goCueTrigger_times[trial_num]
+        except (AttributeError, KeyError):
+            stop_time = trials.goCue_times[trial_num]
+    elif align_to in ('goCue', 'goCue_pre'):
+        stop_time = trials.feedback_times[trial_num]
+    if align_to in ('QP', 'goCue', 'goCue_pre') and not np.isfinite(stop_time):
+        return trajectory
+
     for i in range(n_bins):
         t = start_time + i * interval
-        wheel_end_index = _find_nearest_index(whlt, t)
 
-        # Truncate past relevant event boundaries
-        truncate = False
-        if align_to == 'QP':
-            try:
-                if trials.goCueTrigger_times[trial_num] < whlt[wheel_end_index]:
-                    truncate = True
-            except (AttributeError, KeyError):
-                if trials.goCue_times[trial_num] < whlt[wheel_end_index]:
-                    truncate = True
-        elif align_to in ('goCue', 'goCue_pre'):
-            if (trials.feedback_times[trial_num] + interval) < whlt[wheel_end_index]:
-                truncate = True
+        # Truncate at the event boundary relevant for the alignment.
+        # QP-aligned traces stop before go cue. Go-cue-aligned traces stop at
+        # feedback: the first bin that crosses feedback stores the terminal
+        # wheel position sampled at or before feedback, and later bins remain NaN.
+        if np.isfinite(stop_time):
+            if align_to == 'QP' and t >= stop_time:
+                continue
+            if align_to in ('goCue', 'goCue_pre') and t > stop_time:
+                prev_t = start_time + (i - 1) * interval if i > 0 else start_time
+                if i > 0 and prev_t <= stop_time:
+                    wheel_end_index = _find_last_index_at_or_before(whlt, stop_time)
+                    trajectory[i] = whlpos[wheel_end_index] - whlpos[wheel_start_index]
+                continue
 
-        if not truncate:
-            trajectory[i] = whlpos[wheel_end_index] - whlpos[wheel_start_index]
+        wheel_end_index = wheel_start_index if i == 0 else _find_last_index_at_or_before(whlt, t)
+        trajectory[i] = whlpos[wheel_end_index] - whlpos[wheel_start_index]
 
     return trajectory
+
+
+def _find_last_index_at_or_before(timestamps, target):
+    """Find the last timestamp index at or before target."""
+    idx = np.searchsorted(timestamps, target, side='right') - 1
+    return int(np.clip(idx, 0, len(timestamps) - 1))
 
 
 def _find_nearest_index(timestamps, target):
@@ -1253,7 +1270,7 @@ def plot_bias_shift_comparison(bias_stim, bias_nonstim, title='',
 
 def plot_wheel_comparison(Rblock_stim, Lblock_stim, Rblock_nonstim, Lblock_nonstim,
                           align_to='QP', interval=0.1, duration=10,
-                          title='', save_path=None):
+                          title='', save_path=None, x_limits=None, y_limits=None, figsize=(4, 5)):
     """
     Plot mean wheel trajectories by block and stim condition.
 
@@ -1271,7 +1288,7 @@ def plot_wheel_comparison(Rblock_stim, Lblock_stim, Rblock_nonstim, Lblock_nonst
     """
     x = np.arange(0, duration, interval)
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=figsize)
 
     for data, color, style, label in [
         (Lblock_nonstim, 'xkcd:violet', 'solid', 'CTR L-block'),
@@ -1290,7 +1307,11 @@ def plot_wheel_comparison(Rblock_stim, Lblock_stim, Rblock_nonstim, Lblock_nonst
     ax.set_xlabel(f'Time from {align_to} onset (s)')
     ax.set_ylabel('Cumulative wheel movement')
     ax.set_title(title or 'Wheel movement: stim vs control')
-    ax.legend()
+    if x_limits is not None:
+        ax.set_xlim(x_limits)
+    if y_limits is not None:
+        ax.set_ylim(y_limits)
+    # ax.legend()
     sns.despine(offset=10)
 
     plt.tight_layout()
