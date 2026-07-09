@@ -63,11 +63,11 @@ GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pk
 # SESSION FILTERING THRESHOLDS
 # =============================================================================
 
-# Minimum performance at high contrasts (100%, 25%) on NONSTIM trials to include session
+# Minimum performance at 100% contrasts on NONSTIM trials to include session
 # Set to 0 when using GLM-HMM (engagement filtering replaces performance gating)
 BASELINE_PERFORMANCE_THRESHOLD = 0.7
 
-# Minimum performance on STIM trials at high contrasts
+# Minimum performance on STIM trials at 100% contrasts
 STIM_PERFORMANCE_THRESHOLD = 0
 
 # Minimum number of trials required to include session
@@ -102,7 +102,7 @@ USE_TRIALS_AFTER_STIM = False
 SUBSAMPLE_TRIALS_AFTER_STIM = False
 
 # Which contrasts to use when computing bias shift comparison
-# 'all' = all 9 contrasts, 'high' = only ±100 and ±25, 'low' = only ±12.5, ±6.25, 0
+# 'all' = all 9 contrasts, 'high' = only ±100, 'low' = only ±12.5, ±6.25, 0
 BIAS_COMPARISON_CONTRASTS = 'all'
 
 
@@ -136,8 +136,8 @@ ALL_CONTRASTS = [-100.0, -25.0, -12.5, -6.25, 0.0, 6.25, 12.5, 25.0, 100.0]
 # Low contrast levels for focused analysis (%)
 LOW_CONTRASTS = [-12.5, -6.25, 0.0, 6.25, 12.5]
 
-# High contrast levels
-HIGH_CONTRASTS = [-100.0, -25.0, 25.0, 100.0]
+# High contrast levels (%)
+HIGH_CONTRASTS = [-100.0, 100.0]
 
 # Psychometric fit parameters (for psychofit MLE fitting)
 PSYCHO_FIT_KWARGS = {

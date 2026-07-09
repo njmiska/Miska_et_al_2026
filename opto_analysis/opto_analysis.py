@@ -541,7 +541,7 @@ mouse_qp_nonstim = []
 mouse_qp_stim = []
 mouse_id_list = []
 
-HC_values = np.array([100., -100., 25., -25.])
+HC_values = np.array(HIGH_CONTRASTS)
 ZERO_values = np.array([0.])
 
 for mouse_id, data in mouse_trials_container.items():

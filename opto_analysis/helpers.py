@@ -754,7 +754,7 @@ def compute_bias_shift(psycho_data, fit_kwargs, contrast_set='all'):
         Bias shift at each individual contrast level.
     """
     contrast_points = {
-        'high': [-100., -25., 25., 100.],
+        'high': [-100., 100.],
         'low': [-12.5, -6.25, 0., 6.25, 12.5],
         'all': [-100., -25., -12.5, -6.25, 0., 6.25, 12.5, 25., 100.],
     }
@@ -794,7 +794,7 @@ def compute_bias_shift(psycho_data, fit_kwargs, contrast_set='all'):
 
 def check_session_performance(trials_bunch, contrast_array, threshold, check_type='nonstim'):
     """
-    Check whether high-contrast accuracy exceeds a threshold.
+    Check whether 100% contrast accuracy exceeds a threshold.
 
     Parameters
     ----------
@@ -810,9 +810,9 @@ def check_session_performance(trials_bunch, contrast_array, threshold, check_typ
     passes : bool
         Whether the session passes.
     accuracy_left : float
-        Accuracy on left high-contrast trials.
+        Accuracy on left 100% contrast trials.
     accuracy_right : float
-        Accuracy on right high-contrast trials.
+        Accuracy on right 100% contrast trials.
     """
     if threshold <= 0:
         return True, np.nan, np.nan
@@ -1344,7 +1344,7 @@ def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
         'Accuracy_HC': {
             'col_ctrl': 'Accuracy_HC_Control',
             'col_stim': 'Accuracy_HC_Stim',
-            'ylabel': 'High contrast accuracy',
+            'ylabel': '100% contrast accuracy',
         },
         'Accuracy_0': {
             'col_ctrl': 'Accuracy_0_Control',

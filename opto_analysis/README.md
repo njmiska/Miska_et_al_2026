@@ -6,7 +6,7 @@ Analyzes behavioral data from the IBL 2-AFC task with bilateral optogenetic stim
 
 This pipeline consolidates two previously separate analysis scripts:
 
-1. **Traditional mode** (`USE_GLMHMM = False`): Excludes trials and sessions based on reaction time, high-contrast performance, and baseline bias shift thresholds.
+1. **Traditional mode** (`USE_GLMHMM = False`): Excludes trials and sessions based on reaction time, 100% contrast performance, and baseline bias shift thresholds.
 
 2. **GLM-HMM mode** (`USE_GLMHMM = True`): Uses pre-computed GLM-HMM state labels to isolate trials where the mouse was in a specific engagement state (e.g., "engaged" vs "disengaged"), then applies the same downstream analyses.
 
@@ -46,7 +46,7 @@ opto_analysis/
 | `N_STATES` | Number of GLM-HMM states (2 or 4) | `2` |
 | `STATE_TYPE` | Which state to keep ('engaged', 'disengaged', 'bypass') | `'engaged'` |
 | `STATE_DEF` | State label timing ('current' or 'previous') | `'current'` |
-| `BASELINE_PERFORMANCE_THRESHOLD` | Min accuracy at ±100% and ±25% contrast | `0.7` |
+| `BASELINE_PERFORMANCE_THRESHOLD` | Min accuracy at ±100% contrast | `0.7` |
 | `MIN_BIAS_THRESHOLD` | Min summed nonstim bias shift to include session | `0.3` |
 | `RT_THRESHOLD` | Max reaction time per trial (seconds) | `30` |
 | `MIN_NUM_TRIALS` | Min trial count to include session | `300` |
@@ -122,7 +122,7 @@ Key functions in `helpers.py`:
 | `concat_bunches()` | Concatenate two Bunch objects |
 | `compute_bias_shift()` | Psychometric fit + bias computation across contrasts |
 | `extract_wheel_trajectory()` | Extract per-trial wheel movement aligned to event |
-| `check_session_performance()` | Validate high-contrast accuracy |
+| `check_session_performance()` | Validate 100% contrast accuracy |
 
 ## Troubleshooting
 
