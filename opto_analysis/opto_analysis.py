@@ -40,7 +40,8 @@ from pathlib import Path
 # Local imports
 from config import (
     ALYX_BASE_URL,
-    FIGURE_SAVE_PATH, FIGURE_PREFIX, SAVE_FIGURES, TITLE_TEXT, PLOT_FOR_PAPER,
+    FIGURE_SAVE_PATH, FIGURE_PREFIX, FIGURE_FORMAT,
+    SAVE_FIGURES, TITLE_TEXT, PLOT_FOR_PAPER,
     FLAG_FAILED_LOADS,
     USE_GLMHMM, N_STATES, STATE_TYPE, STATE_DEF,
     GLMHMM_STATES_FILE, GLMHMM_ENGAGED_PREV_FILE, GLMHMM_DISENGAGED_PREV_FILE,
@@ -78,6 +79,9 @@ from helpers import (
     plot_bars_by_mouse, plot_per_mouse_psychometrics,
     compute_mean_psychometric_across_mice,
 )
+
+plt.rcParams['pdf.fonttype'] = 42
+plt.rcParams['ps.fonttype'] = 42
 
 
 # =============================================================================
@@ -1004,14 +1008,14 @@ if len(df_wheel_scalar_mouse):
         df_wheel_scalar_mouse,
         'QP',
         title=f'{title_text}\nQP wheel @ {WHEEL_QP_SCALAR_TIME:g}s',
-        save_path=stats_output_dir / f'{stats_prefix}_wheel_QP_scalar_bars.png',
+        save_path=stats_output_dir / f'{stats_prefix}_wheel_QP_scalar_bars.{FIGURE_FORMAT}',
         figsize=WHEEL_SCALAR_BAR_FIGSIZE,
     ))
     statistics_summary_rows.extend(_plot_wheel_scalar_bars(
         df_wheel_scalar_mouse,
         'GoCue_low_contrast',
         title=f'{title_text}\nGo cue low contrast wheel @ {WHEEL_GOCUE_SCALAR_TIME:g}s',
-        save_path=stats_output_dir / f'{stats_prefix}_wheel_gocue_low_contrast_scalar_bars.png',
+        save_path=stats_output_dir / f'{stats_prefix}_wheel_gocue_low_contrast_scalar_bars.{FIGURE_FORMAT}',
         figsize=WHEEL_SCALAR_BAR_FIGSIZE,
     ))
 if len(df_wheel_difference_mouse):
@@ -1019,14 +1023,14 @@ if len(df_wheel_difference_mouse):
         df_wheel_difference_mouse,
         'QP',
         title=f'{title_text}\nQP R-L wheel @ {WHEEL_QP_SCALAR_TIME:g}s',
-        save_path=stats_output_dir / f'{stats_prefix}_wheel_QP_R_minus_L_bars.png',
+        save_path=stats_output_dir / f'{stats_prefix}_wheel_QP_R_minus_L_bars.{FIGURE_FORMAT}',
         figsize=WHEEL_DIFFERENCE_BAR_FIGSIZE,
     ))
     statistics_summary_rows.extend(_plot_wheel_difference_bars(
         df_wheel_difference_mouse,
         'GoCue_low_contrast',
         title=f'{title_text}\nGo cue low contrast R-L wheel @ {WHEEL_GOCUE_SCALAR_TIME:g}s',
-        save_path=stats_output_dir / f'{stats_prefix}_wheel_gocue_low_contrast_R_minus_L_bars.png',
+        save_path=stats_output_dir / f'{stats_prefix}_wheel_gocue_low_contrast_R_minus_L_bars.{FIGURE_FORMAT}',
         figsize=WHEEL_DIFFERENCE_BAR_FIGSIZE,
     ))
 
@@ -1097,7 +1101,7 @@ if stim_trials_master is not None:
     plot_psychometric_curves(
         stim_psycho_master, nonstim_psycho_master, PSYCHO_FIT_KWARGS,
         title=title_text,
-        save_path=f'{save_prefix}_psychometric.png' if save_prefix else None,
+        save_path=f'{save_prefix}_psychometric.{FIGURE_FORMAT}' if save_prefix else None,
         plot_for_paper=PLOT_FOR_PAPER,
         n_stim_trials=sum(stim_trials_per_session),
         n_nonstim_trials=sum(nonstim_trials_per_session),
@@ -1110,7 +1114,7 @@ if np.sum(valid_mask) > 1:
     plot_bias_shift_comparison(
         bias_shift_sum_all_stim, bias_shift_sum_all_nonstim,
         title=title_text,
-        save_path=f'{save_prefix}_bias_shift.png' if save_prefix else None,
+        save_path=f'{save_prefix}_bias_shift.{FIGURE_FORMAT}' if save_prefix else None,
         plot_for_paper=PLOT_FOR_PAPER,
     )
 
@@ -1125,7 +1129,7 @@ if _has_wheel_data(
         align_to=WHEEL_ALIGN_TO, interval=WHEEL_TIME_INTERVAL,
         duration=WHEEL_ANALYSIS_DURATION,
         title=title_text,
-        save_path=f'{save_prefix}_wheel.png' if save_prefix else None,
+        save_path=f'{save_prefix}_wheel.{FIGURE_FORMAT}' if save_prefix else None,
         x_limits=WHEEL_QP_X_LIMITS,
         y_limits=WHEEL_QP_Y_LIMITS,
         figsize=(3, 2.5),
@@ -1143,7 +1147,7 @@ if _has_wheel_data(
         align_to='goCue', interval=WHEEL_TIME_INTERVAL,
         duration=WHEEL_GOCUE_LOW_CONTRAST_DURATION,
         title=f'{title_text}\nLow contrasts only',
-        save_path=f'{save_prefix}_wheel_gocue_low_contrast.png' if save_prefix else None,
+        save_path=f'{save_prefix}_wheel_gocue_low_contrast.{FIGURE_FORMAT}' if save_prefix else None,
         x_limits=(0, WHEEL_GOCUE_LOW_CONTRAST_DURATION),
         figsize=(3, 2.5),
     )
@@ -1160,7 +1164,7 @@ ax.legend()
 sns.despine(offset=10)
 plt.tight_layout()
 if save_prefix:
-    plt.savefig(f'{save_prefix}_RT_distribution.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'{save_prefix}_RT_distribution.{FIGURE_FORMAT}', dpi=150, bbox_inches='tight')
     plt.close()
 else:
     plt.show()
@@ -1170,22 +1174,28 @@ if len(df_mouse) >= 2:
     bar_save = str(FIGURE_SAVE_PATH) if SAVE_FIGURES else None
 
     plot_bars_by_mouse(df_mouse, mode='Bias_LC',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 
     plot_bars_by_mouse(df_mouse, mode='Bias_All',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 
     plot_bars_by_mouse(df_mouse, mode='Accuracy_HC',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 
     plot_bars_by_mouse(df_mouse, mode='Accuracy_0',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 
     plot_bars_by_mouse(df_mouse, mode='RT',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 
     plot_bars_by_mouse(df_mouse, mode='QP',
-                       save_path=bar_save, prefix=FIGURE_PREFIX, stim_label=stim_label)
+                       save_path=bar_save, prefix=FIGURE_PREFIX,
+                       stim_label=stim_label, figure_format=FIGURE_FORMAT)
 else:
     print('\nNot enough mice (need >= 2) for per-mouse bar plots.')
 
@@ -1194,7 +1204,7 @@ if len(mouse_trials_container) > 0:
     plot_per_mouse_psychometrics(
         mouse_trials_container, PSYCHO_FIT_KWARGS,
         title=title_text,
-        save_path=f'{save_prefix}_psychometric_per_mouse.png' if save_prefix else None,
+        save_path=f'{save_prefix}_psychometric_per_mouse.{FIGURE_FORMAT}' if save_prefix else None,
     )
 
 print('\nDone.')

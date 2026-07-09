@@ -1323,7 +1323,8 @@ def plot_wheel_comparison(Rblock_stim, Lblock_stim, Rblock_nonstim, Lblock_nonst
 
 
 def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
-                       save_path=None, prefix='', stim_label='Stim'):
+                       save_path=None, prefix='', stim_label='Stim',
+                       figure_format='pdf'):
     """
     Plot paired bar + line chart comparing control vs stim per mouse.
 
@@ -1345,6 +1346,8 @@ def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
         Filename prefix for saved figure.
     stim_label : str
         Label for the stim condition (e.g., 'SNr Inhibition', 'Stim').
+    figure_format : str
+        File extension/format to use when saving the figure.
 
     Returns
     -------
@@ -1448,7 +1451,7 @@ def plot_bars_by_mouse(mouse_df, y_limits=None, mode='Bias_LC',
     plt.tight_layout()
 
     if save_path:
-        fname = f"{save_path}/{prefix}_PerMouse_{mode}.png"
+        fname = f"{save_path}/{prefix}_PerMouse_{mode}.{figure_format}"
         plt.savefig(fname, dpi=150, bbox_inches='tight')
         plt.close()
     else:

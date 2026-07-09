@@ -174,6 +174,9 @@ SAVE_FIGURES = True
 # Prefix for saved figure filenames
 FIGURE_PREFIX = '110'
 
+# Format for saved Matplotlib figures. PDF preserves vector text/lines for publication.
+FIGURE_FORMAT = 'pdf'
+
 # Title text for plots (set automatically from session filters if None)
 TITLE_TEXT = None
 
