@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "profile_id": "supp1_state_occupancy",
+  "figure": "Supplementary Figure 1",
+  "label": "GLM-HMM state occupancy in left and right blocks",
+  "pipeline": "state_occupancy",
+  "entrypoint": null,
+  "status": "awaiting_colleague_code",
+  "metadata_source": null,
+  "selection": {},
+  "glmhmm": {"applicable": true, "enabled": true, "n_states": 2, "state_type": "all_states", "state_definition": "previous"},
+  "parameters": {},
+  "output": {"figure_prefix": "supp1_state_occupancy"},
+  "notes": "Exact source code, cohort, and data-access inventory must be supplied by the colleague who generated this panel."
+}

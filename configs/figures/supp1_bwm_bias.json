@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "profile_id": "supp1_bwm_bias",
+  "figure": "Supplementary Figure 1",
+  "label": "Brain-Wide Map bias-selectivity analysis",
+  "pipeline": "bias_selectivity",
+  "entrypoint": "bias_selectivity_analysis/quantify_biasselective_allregions_2.py",
+  "status": "awaiting_cohort_metadata",
+  "metadata_source": null,
+  "selection": {},
+  "glmhmm": {"applicable": false, "enabled": false, "n_states": null, "state_type": null, "state_definition": null},
+  "parameters": {},
+  "output": {"figure_prefix": "supp1_bwm_bias"},
+  "notes": "The analysis source is present, but the exact BWM cohort metadata has not yet been frozen into metadata_final."
+}

@@ -49,7 +49,7 @@ Edit `config.py` to set:
 
 ### File Paths
 ```python
-BASE_DIR = Path('/your/path/to/project')
+BASE_DIR = Path(__file__).resolve().parent
 ZAPIT_TRIALS_LOG = BASE_DIR / 'zapit_trials.yml'
 ALLEN_CCF_ANNOTATION = Path('/path/to/annotation_volume_10um.npy')
 FIGURE_SAVE_PATH = Path('/path/to/output/figures')

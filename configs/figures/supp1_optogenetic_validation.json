@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "profile_id": "supp1_optogenetic_validation",
+  "figure": "Supplementary Figure 1",
+  "label": "Direct SNr and ZI optogenetic validation",
+  "pipeline": "ephys_bs",
+  "entrypoint": "ephys_analysis/SNr_inhibition_BS_downstream_effect.py",
+  "postprocess_entrypoint": "ephys_analysis/BS_postprocess.py",
+  "status": "ready_source_snapshot",
+  "metadata_source": "metadata_final/metadata_direct_stimulation.py",
+  "selection": {"condition": ["SNr_directstim", "ZI_directstim"]},
+  "glmhmm": {"applicable": false, "enabled": false, "n_states": null, "state_type": null, "state_definition": null},
+  "parameters": {},
+  "output": {"figure_prefix": "supp1_optogenetic_validation"},
+  "runs": [
+    {"run_id": "snr_directstim", "selection_overrides": {"condition": ["SNr_directstim"]}, "output_overrides": {"figure_prefix": "supp1_snr_directstim"}},
+    {"run_id": "zi_directstim", "selection_overrides": {"condition": ["ZI_directstim"]}, "output_overrides": {"figure_prefix": "supp1_zi_directstim"}}
+  ]
+}

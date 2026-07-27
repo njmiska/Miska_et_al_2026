@@ -25,9 +25,19 @@ opto_analysis/
 
 ## Quick Start
 
-1. **Update paths** in `config.py` to match your local setup (especially `BASE_DIR`, `FIGURE_SAVE_PATH`, and `GLMHMM_BASE_DIR`).
+1. Choose a manuscript profile in `../configs/figures/`; do not uncomment a
+   cohort block in `config.py` for a reproducibility run.
 
-2. **Set session filters** in `config.py` under `SESSION_FILTERS` to select the experiments you want to analyze (by mouse, brain region, opsin, etc.).
+2. Preview or run it through the repository adapter. Paths are supplied at
+   runtime rather than edited in source:
+
+   ```bash
+   python3 scripts/reproduce.py figure1_snr_glmhmm --dry-run
+   python3 scripts/reproduce.py figure1_snr_glmhmm \
+     --glmhmm-dir /path/to/GLM-HMM \
+     --one-cache-dir /path/to/ONE/cache \
+     --output-root /path/to/output
+   ```
 
 3. **Choose analysis mode**: set `USE_GLMHMM = True` or `False`.
 
@@ -136,7 +146,7 @@ Key functions in `helpers.py`:
 - Check file paths in config (`GLMHMM_STATES_FILE`).
 
 ### "No sessions met criteria"
-- Review `SESSION_FILTERS` in `config.py`.
+- Review the selected profile's `selection` object and dry-run output.
 - Temporarily lower quality thresholds to diagnose.
 - Check that metadata entries in `metadata_all.py` match your filter values.
 

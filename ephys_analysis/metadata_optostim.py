@@ -1,5 +1,3 @@
-### ANALYZE STN DATA!!
-
 pids_list_STN_ipsi = ['c547dda9-2006-4e4d-9498-396aac25d54b','c4051389-6e82-4c48-9116-fc5be6ebace9','60668d72-b4ba-4c59-830a-915458f62192', #24 17/2, 16/2, 15/2
                       '6ee63cc8-37ef-49ff-8c00-70a03e503725','126cfd2e-2fa4-4d81-a520-25bbeab59fae','6bfade8f-e22a-42fa-b8d0-8c22d172c237', #25 9/12, 8/12, 7/12
                       '442a8e82-4be2-4fdf-b457-6d7f4b0111e5','bc5d45e1-7e63-4d32-94f2-f785be9e75f8'] #26 16/2, 15/2
@@ -7,6 +5,59 @@ pids_list_STN_ipsi = ['c547dda9-2006-4e4d-9498-396aac25d54b','c4051389-6e82-4c48
 pids_list_STN_contra = ['19b9e2f8-5e46-4ff4-bef3-4652019be01a','d082c08d-2c7e-4761-9936-8bbefa8068d1','ae535cc1-87aa-4fa8-acca-8892c8f81e4c', #24 17/2, 16/2, 15/2
                         '6509394a-ee93-4164-a516-d4d483fb5da0','1bffcd91-1e56-4724-9047-69e18bc7a104', #25 8/12, 7/12
                         '855ef2f9-4a68-4398-bf3d-c9a6b7c44702','dcd1c7d3-b413-47dc-a120-c3cafbbbbd96'] #26 16/2, 15/2
+
+excitation_trials_range_list_STN_ipsi = [list(range(0, 191)) + list(range(354, 493)), #SWC_NM_024 17/2
+                                         list(range(0, 156)) + list(range(355, 524)), #SWC_NM_024 16/2
+                                         list(range(151, 316)) + list(range(473, 9999)), #SWC_NM_024 15/2
+                                         list(range(180,432)), #SWC_NM_025 09/12
+                                         list(range(185,361)) + list(range(559,9999)), #SWC_NM_025 08/12
+                                         list(range(169,492)), #SWC_NM_025 07/12
+                                         list(range(154,9999)), #SWC_NM_026 16/2
+                                         list(range(0,155)) + list(range(343,9999)) #SWC_NM_026 15/2
+]
+inhibition_trials_range_list_STN_ipsi = [list(range(191, 354)) + list(range(493, 9999)), #SWC_NM_024 17/2
+                                         list(range(156, 355)) + list(range(524, 9999)), #SWC_NM_024 16/2
+                                         list(range(0, 150)) + list(range(326, 472)), #SWC_NM_024 15/2
+                                         list(range(0,180)) + list(range(432,9999)), #SWC_NM_025 09/12
+                                         list(range(0,185)) + list(range(361,559)), #SWC_NM_025 08/12
+                                         list(range(3,168)) + list(range(493,9999)), #SWC_NM_025 07/12
+                                         list(range(0,154)), #SWC_NM_026 16/2
+                                         list(range(155,343)) #SWC_NM_026 15/2
+]
+excitation_trials_range_list_STN_contra = [list(range(0, 191)) + list(range(354, 493)), #SWC_NM_024 17/2
+                                           list(range(0, 156)) + list(range(355, 524)), #SWC_NM_024 16/2
+                                           list(range(151, 316)) + list(range(473, 9999)), #SWC_NM_024 15/2
+                                           list(range(185,361)) + list(range(559,9999)), #SWC_NM_025 08/12
+                                           list(range(169,492)), #SWC_NM_025 07/12
+                                           list(range(154,9999)), #SWC_NM_026 16/2
+                                           list(range(0,155)) + list(range(343,9999)) #SWC_NM_026 15/2
+]
+inhibition_trials_range_list_STN_contra = [list(range(191, 354)) + list(range(493, 9999)), #SWC_NM_024 17/2
+                                           list(range(156, 355)) + list(range(524, 9999)), #SWC_NM_024 16/2
+                                           list(range(0, 150)) + list(range(326, 472)), #SWC_NM_024 15/2
+                                           list(range(0,185)) + list(range(361,559)), #SWC_NM_025 08/12
+                                           list(range(3,168)) + list(range(493,9999)), #SWC_NM_025 07/12
+                                           list(range(0,154)), #SWC_NM_026 16/2
+                                           list(range(155,343)) #SWC_NM_026 15/2
+]
+
+light_artifact_units_STN_ipsi = [[],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+]
+light_artifact_units_STN_contra = [[],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+                                 [],
+]
 
 pids_list_ZI_directstim = ['c2f05bd0-bd6e-4d9c-8c34-aeb086f77045', '1285d34a-d2a2-418b-9ba7-b0ad55025b6c', #SWC_NM_023 25/8/22, #SWC_NM_023 26/8/22 #this second penetration is shit
                            'ccfb329e-c3b0-43be-9710-5d7c8ee968d2', #SWC_NM_020 23/3/22
@@ -39,8 +90,8 @@ pids_list_SNr = ['518b61c2-45bc-40c2-bee1-d87b0d1986ac','e4696ffd-248e-41cb-a62a
                  'e91b783b-ec23-4963-9cc0-601c4d093d0f'] #SWC_NM_021 SNr 23/3/22
                  # SWC_NM_027! (7/9 and 8/9) need to manually check each trial for stim...
 pids_list_SNr_trained = ['518b61c2-45bc-40c2-bee1-d87b0d1986ac', #SWC_NM_018 15/6 probe01
-                         'e4696ffd-248e-41cb-a62a-16e320b8cd7e', #SWC_NM_018 16/6 probe01 
-                        #  '59bf32ee-1d83-4a7f-bf14-590b610c96e0', #SWC_NM_018 17/6 (few trials) X
+                         'e4696ffd-248e-41cb-a62a-16e320b8cd7e', #SWC_NM_018 16/6 probe01
+                         '59bf32ee-1d83-4a7f-bf14-590b610c96e0', #SWC_NM_018 17/6 (few trials) X
                         #  '0d60096b-a037-4b6f-a50c-ff469298ba71', #SWC_NM_012 (poor/random stim trial performance)
                          '930adc32-438a-4548-a741-dc8a487ebd4f', #SWC_NM_096 23/09 L probe
                          '7778d726-767e-4d1b-a879-01faf2075828', #SWC_NM_096 24/09 R probe ### alignment seems good; small group of SNr units at bottom
@@ -55,6 +106,19 @@ pids_list_SNr_trained = ['518b61c2-45bc-40c2-bee1-d87b0d1986ac', #SWC_NM_018 15/
                          'fc4f446b-177c-4b94-89d2-14c0500374a4', #SWC_NM_102 12/2 L probe ### revisit! shows essentially no effect...
                          '32425853-de5f-4e5d-8a73-fe1285893c7f', #SWC_NM_102 13/2 L probe
                          '9583d73c-ee29-45d1-9aa1-2b5917bcf726', #SWC_NM_102 14/2 L probe
+                         '141fba8a-403d-44f2-89bc-0d8cd45f611e', #SWC_NM_113 14/05/26 L
+                         'a1289836-79d8-45ce-9481-072c9e5c71b0', #SWC_NM_113 14/05/26 R
+                         '414329ec-11b7-48a7-a011-0ec05948c66b', #SWC_NM_113 15/05/26 L
+                         '77c33d3e-8b71-43f9-9a9c-b7dc49a25e30', #SWC_NM_113 16/05/26 L
+                         '9c43c3e2-1019-4e66-b8b2-b8b693fa5254', #SWC_NM_113 16/05/26 R
+                         '227e4a3a-9340-48bc-82a3-dd0a04b123a9', #SWC_NM_113 17/05/26 R - not a ton of units - old probe
+                         '85caca51-d501-4d81-85f2-74f084c7e99e', #SWC_NM_113 17/05/26 L - excellent yield
+                         '09ee9be3-3c85-46bb-aed3-3143862ef03d', #SWC_NM_113 18/05/26 R
+                         '2e13e28b-8ec3-436c-8d63-408b323e9511', #SWC_NM_113 18/05/26 L
+                         '15eca47c-a6fe-4b7b-99fd-2657549c3258', #SWC_NM_113 19/05/26 R
+                         'af47abd5-e9cb-4130-ba66-5a277141a1bb', #SWC_NM_113 19/05/26 L
+                         '89c36fa2-e889-46a2-af2f-ee0fad10de43', #SWC_NM_113 20/05/26 L
+                         'e1b4c254-0455-4cd3-9642-0e23892aef85', #SWC_NM_113 21/05/26 L
 ]
 
 pids_list_SNr_contra = [
@@ -62,9 +126,10 @@ pids_list_SNr_contra = [
                         'b7998d00-b4c4-4695-8fc3-f8001539c90e', #SWC_NM_018 16/6
                         # 'eb0937f5-951b-4bf8-9dc4-83ed776a1503', #SWC_NM_018 17/6 (few trials)
                         '3f9ff280-98b2-478a-b38f-b49294923756', #SWC_NM_021 24/3
-                        '06cdb7a7-df86-48ea-8533-b1e383436987', 'a9c28dc5-6e1d-4750-8fff-1113ed26e6e9'] # SWC_NM_016
+                        '06cdb7a7-df86-48ea-8533-b1e383436987', 'a9c28dc5-6e1d-4750-8fff-1113ed26e6e9', # SWC_NM_016
+]
 pids_list_SNr_contra_trained = [
-                                # 'b96ed9ce-1a0a-4818-b896-8aa79ca26801',#SWC_NM_018 15/6, #questionable quality rec X?
+                                'b96ed9ce-1a0a-4818-b896-8aa79ca26801',#SWC_NM_018 15/6, #questionable quality rec X?
                                 'b7998d00-b4c4-4695-8fc3-f8001539c90e', # SWC_NM_018 16/6
                                 # 'eb0937f5-951b-4bf8-9dc4-83ed776a1503', #SWC_NM_018 17/6 (few trials) - shit session X
                                 'caf25d31-2d5b-45a9-85b4-585e380ebab2', #SWC_NM_096 23/09 R probe ## questionable probe location - overlapping with longer track, questionable CD X?
@@ -77,6 +142,7 @@ pids_list_SNr_contra_trained = [
                                 '6bf18fe0-fca9-4cd3-aa69-546d34d24c12', #SWC_NM_102 11/2 R probe
                                 '77946f89-7b49-43b0-b34d-c17fc70504c4', #SWC_NM_102 12/2 R probe
                                 '4743a9f7-24d3-4cac-b956-d0323d4269db', #SWC_NM_102 13/2 R probe
+                                'a02790bb-1dcf-4e9d-a8f0-c0a071bc2e37', #SWC_NM_113 15/05/26 R very few BS units... maybe some issue with recording?
 ]
 
 excitation_trials_range_list_SNr = [list(range(242,364)) + list(range(461,581)) + list(range(674,769)), #SWC_NM_018 15/6
@@ -100,7 +166,7 @@ inhibition_trials_range_list_SNr = [list(range(139,242)) + list(range(364,461)) 
                                     list(range(0,54)) + list(range(140,193)) + list(range(276,358))] #SWC_NM_021 SNr 23/3/22
 excitation_trials_range_list_SNr_trained = [list(range(242,364)) + list(range(461,581)) + list(range(674,769)), #SWC_NM_018 15/6
                                     list(range(283,423)) + list(range(528,660)) + list(range(767,833)), #SWC_NM_018 16/6
-                                    # list(range(371,422)) + list(range(485,501)), #SWC_NM_018 17/6
+                                    list(range(371,422)) + list(range(485,501)), #SWC_NM_018 17/6
                                     # list(range(180,369)), #SWC_NM_012
                                     [], #96
                                     [], #96
@@ -108,17 +174,30 @@ excitation_trials_range_list_SNr_trained = [list(range(242,364)) + list(range(46
                                     [], #96
                                     # [], #97
                                     # [], #97
-                                    [], #97
+                                    # [], #97
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
 ]
 
 inhibition_trials_range_list_SNr_trained = [list(range(139,242)) + list(range(364,461)) + list(range(581,674)) + list(range(769,798)), #SWC_NM_018 15/6
                                     list(range(121,283)) + list(range(423,528)) + list(range(660,767)), #SWC_NM_018 16/6
-                                    # list(range(422,485)), #SWC_NM_018 17/6
+                                    list(range(422,485)), #SWC_NM_018 17/6
                                     # list(range(75,180)), #SWC_NM_012
                                     list(range(0,410)) + list(range(516,776)), #96
                                     'ALL', #96
@@ -126,27 +205,40 @@ inhibition_trials_range_list_SNr_trained = [list(range(139,242)) + list(range(36
                                     'ALL', #96
                                     # 'ALL', #97
                                     # 'ALL', #97
-                                    'ALL', #97
+                                    # 'ALL', #97
                                     'ALL', #102
                                     'ALL', #102
                                     'ALL', #102
                                     'ALL', #102
                                     'ALL', #102
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
+                                    'ALL',
 ]
 
 excitation_trials_range_list_SNr_contra = [list(range(242,364)) + list(range(461,581)) + list(range(674,769)), #SWC_NM_018 15/6
                                     list(range(283,423)) + list(range(528,660)) + list(range(767,833)), #SWC_NM_018 16/6
-                                    # list(range(371,422)) + list(range(485,501)), #SWC_NM_018 17/6
+                                    list(range(371,422)) + list(range(485,501)), #SWC_NM_018 17/6
                                     list(range(67,169)) + list(range(283,370)), #SWC_NM_021 24/3
                                     list(range(50,100)) + list(range(150,230)), # SWC_NM_016
                                     list(range(69,197)) + list(range(320,473))] # SWC_NM_016
 inhibition_trials_range_list_SNr_contra = [list(range(139,242)) + list(range(364,461)) + list(range(581,674)) + list(range(769,798)), #SWC_NM_018 15/6
                                     list(range(121,283)) + list(range(423,528)) + list(range(660,767)), #SWC_NM_018 16/6
-                                    # list(range(422,485)), #SWC_NM_018 17/6
+                                    list(range(422,485)), #SWC_NM_018 17/6
                                     list(range(0,67)) + list(range(169,283)), #SWC_NM_021 24/3
                                     list(range(0,50)) + list(range(100,150)) + list(range(230,304)), # SWC_NM_016
                                     list(range(0,69)) + list(range(197,320))] # SWC_NM_016
-excitation_trials_range_list_SNr_contra_trained = [#list(range(242,364)) + list(range(461,581)) + list(range(674,769)), #SWC_NM_018 15/6 X
+excitation_trials_range_list_SNr_contra_trained = [list(range(242,364)) + list(range(461,581)) + list(range(674,769)), #SWC_NM_018 15/6 X
                                     list(range(283,423)) + list(range(528,660)) + list(range(767,833)), #SWC_NM_018 16/6
                                     # list(range(371,422)) + list(range(485,501)), #SWC_NM_018 17/6
                                     [], #96
@@ -154,13 +246,14 @@ excitation_trials_range_list_SNr_contra_trained = [#list(range(242,364)) + list(
                                     [], #96
                                     [], #96
                                     # [], #97
-                                    [], #97
+                                    # [], #97
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
+                                    [],
 ]
-inhibition_trials_range_list_SNr_contra_trained = [#list(range(139,242)) + list(range(364,461)) + list(range(581,674)) + list(range(769,798)), #SWC_NM_018 15/6 X
+inhibition_trials_range_list_SNr_contra_trained = [list(range(139,242)) + list(range(364,461)) + list(range(581,674)) + list(range(769,798)), #SWC_NM_018 15/6 X
                                     list(range(121,283)) + list(range(423,528)) + list(range(660,767)), #SWC_NM_018 16/6
                                     # list(range(422,485)), #SWC_NM_018 17/6
                                     list(range(0,410)) + list(range(516,776)), #96
@@ -168,11 +261,12 @@ inhibition_trials_range_list_SNr_contra_trained = [#list(range(139,242)) + list(
                                     'ALL', #96
                                     'ALL', #96
                                     # 'ALL', #97
-                                    'ALL', #97
+                                    # 'ALL', #97
                                     'ALL', #102
                                     'ALL', #102
                                     'ALL', #102
                                     'ALL', #102
+                                    'ALL',
 ]
 
 light_artifact_units_SNr = [[0,3,4,5,6,7,8],[[62,125,227]], #SWC_NM_018 15/6, 16/6
@@ -187,14 +281,27 @@ light_artifact_units_SNr_trained = [[0,3,4,5,6,7,8],[[62,125,227]], #SWC_NM_018 
                                     [], #96
                                     [], #96
                                     [], #96
-                                    # [], #97
-                                    # [], #97
+                                    [], #97
+                                    [], #97
                                     [], #97
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
+                                    [],
 ]
 
 light_artifact_units_SNr_contra = [[127,128,146,147,203], #SWC_NM_018 15/6
@@ -203,7 +310,7 @@ light_artifact_units_SNr_contra = [[127,128,146,147,203], #SWC_NM_018 15/6
                                     [],[],
                                     [11,66,415,420,422]] #SWC_NM_016 23/6
 
-light_artifact_units_SNr_contra_trained = [#[127,128,146,147,203], #SWC_NM_018 15/6
+light_artifact_units_SNr_contra_trained = [[127,128,146,147,203], #SWC_NM_018 15/6
                                     [3,119,139,148,178,187,244,254,255,258], #SWC_NM_018 16/6
                                     # [84,219], #SWC_NM_018 17/6
                                     [], #96
@@ -211,11 +318,12 @@ light_artifact_units_SNr_contra_trained = [#[127,128,146,147,203], #SWC_NM_018 1
                                     [], #96
                                     [], #96
                                     # [], #97
-                                    [], #97
+                                    # [], #97
                                     [], #102
                                     [], #102
                                     [], #102
                                     [], #102
+                                    [],
 ]
 
 pids_list_ZI = ['0022179b-0101-48b0-b60f-c5de8ed3761d', 'ccfb329e-c3b0-43be-9710-5d7c8ee968d2',  #SWC_NM_020 22/3/22, #SWC_NM_020 23/3/22 (mostly ZI/thal, but also lots of MB units)
@@ -266,15 +374,15 @@ inhibition_trials_range_list_ZI_trained = [
                                    list(range(172,401)), #SWC_NM_022 21/9
                                    list(range(246,514)) + list(range(700,713)), #SWC_NM_022 22/9
                                    list(range(0,113)) + list(range(366,504)), #SWC_NM_022 23/9
-                                   'ALL', 
-                                   'ALL', 
-                                   'ALL', 
                                    'ALL',
-                                   'ALL', 
                                    'ALL',
-                                   'ALL', 
                                    'ALL',
-                                   'ALL', 
+                                   'ALL',
+                                   'ALL',
+                                   'ALL',
+                                   'ALL',
+                                   'ALL',
+                                   'ALL',
                                    'ALL',
 ]
 

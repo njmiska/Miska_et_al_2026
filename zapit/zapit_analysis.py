@@ -34,6 +34,7 @@ from statsmodels.stats.proportion import proportions_ztest
 # Local imports
 from config import (
     ZAPIT_TRIALS_LOG, ZAPIT_LOCATIONS_LOG,
+    ONE_CACHE_DIR,
     ALLEN_CCF_ANNOTATION, ALLEN_STRUCTURE_TREE,
     FIGURE_SAVE_PATH, FIGURE_PREFIX, SAVE_FIGURES,
     BASELINE_PERFORMANCE_THRESHOLD, STIM_PERFORMANCE_THRESHOLD,
@@ -94,7 +95,7 @@ if active_filters:
 # =============================================================================
 
 # Connect to IBL database
-one = ONE(base_url=ALYX_BASE_URL, cache_dir=Path.home() / 'Downloads' / 'ONE' / 'alyx.internationalbrainlab.org')
+one = ONE(base_url=ALYX_BASE_URL, cache_dir=ONE_CACHE_DIR)
 
 # Load GLM-HMM data if enabled
 state_probability = None

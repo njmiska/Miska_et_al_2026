@@ -14,6 +14,8 @@ Toggle USE_GLMHMM to switch between:
   - False: Use traditional RT, performance, and bias exclusion criteria
 """
 
+import os
+import sys
 import numpy as np
 from pathlib import Path
 
@@ -23,10 +25,15 @@ from pathlib import Path
 # =============================================================================
 
 # Base directory for helper scripts
-BASE_DIR = Path('/Users/natemiska/python/opto_analysis')
+BASE_DIR = Path(__file__).resolve().parent
 
 # Output directory for figures
-FIGURE_SAVE_PATH = Path('/Users/natemiska/Desktop/opto_figures')
+FIGURE_SAVE_PATH = BASE_DIR.parent / 'outputs' / 'opto_analysis'
+
+ONE_CACHE_DIR = Path(os.environ.get(
+    'MISKA_ONE_CACHE_DIR',
+    Path.home() / 'Downloads' / 'ONE' / 'alyx.internationalbrainlab.org',
+))
 
 # IBL Alyx database URL
 ALYX_BASE_URL = 'https://alyx.internationalbrainlab.org'
@@ -53,7 +60,8 @@ STATE_TYPE = 'engaged'
 STATE_DEF = 'previous'
 
 # File paths for GLM-HMM state data
-GLMHMM_BASE_DIR = Path('/Users/natemiska/int-brain-lab/GLM-HMM')
+GLMHMM_BASE_DIR = Path(os.environ.get(
+    'MISKA_GLMHMM_DIR', Path.home() / 'int-brain-lab' / 'GLM-HMM'))
 GLMHMM_STATES_FILE = GLMHMM_BASE_DIR / 'all_subject_states.csv'
 GLMHMM_ENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'engaged_prevtrial_indices.pkl'
 GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pkl'
@@ -269,6 +277,16 @@ SESSION_FILTERS = {
 #     'EID': None,
 #     # Specific session EID(s)
 # }
+
+
+# Declarative manuscript profile override. scripts/reproduce.py sets these
+# environment variables; the scientific computation itself is unchanged.
+if os.environ.get('MISKA_PROFILE_ID'):
+    _repo_root = Path(__file__).resolve().parents[1]
+    if str(_repo_root) not in sys.path:
+        sys.path.insert(0, str(_repo_root))
+    from scripts.profile_runtime import apply_runtime_profile
+    PROFILE_RUNTIME = apply_runtime_profile(globals(), 'opto_behavior')
 
 
 # ## ZI defaults:

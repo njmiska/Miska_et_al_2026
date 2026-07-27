@@ -13,6 +13,8 @@ Toggle USE_GLMHMM to switch between:
   - False: Use traditional accuracy, bias shift, and RT exclusion criteria
 """
 
+import os
+import sys
 import numpy as np
 from pathlib import Path
 
@@ -21,7 +23,7 @@ from pathlib import Path
 # =============================================================================
 
 # Base directory for the project (update this to your local path)
-BASE_DIR = Path('/Users/natemiska/python/zapit')
+BASE_DIR = Path(__file__).resolve().parent
 
 # Zapit trial log file
 ZAPIT_TRIALS_LOG = BASE_DIR / 'zapit_trials.yml'
@@ -31,11 +33,20 @@ ZAPIT_LOCATIONS_LOG = BASE_DIR / 'zapit_log.yml'
 
 # Allen CCF atlas data (download from Allen Institute)
 # See: https://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/
-ALLEN_CCF_ANNOTATION = Path('/Users/natemiska/python/Allen/annotation_volume_10um.npy')
-ALLEN_STRUCTURE_TREE = Path('/Users/natemiska/python/Allen/structure_tree_safe_2017.csv')
+ALLEN_CCF_ANNOTATION = Path(os.environ.get(
+    'MISKA_ALLEN_ANNOTATION', BASE_DIR.parent / 'external' / 'allen' /
+    'annotation_volume_10um.npy'))
+ALLEN_STRUCTURE_TREE = Path(os.environ.get(
+    'MISKA_ALLEN_STRUCTURE_TREE', BASE_DIR.parent / 'external' / 'allen' /
+    'structure_tree_safe_2017.csv'))
 
 # Output directory for figures
-FIGURE_SAVE_PATH = Path('/Users/natemiska/Desktop/zapit_check')
+FIGURE_SAVE_PATH = BASE_DIR.parent / 'outputs' / 'zapit'
+
+ONE_CACHE_DIR = Path(os.environ.get(
+    'MISKA_ONE_CACHE_DIR',
+    Path.home() / 'Downloads' / 'ONE' / 'alyx.internationalbrainlab.org',
+))
 
 # =============================================================================
 # GLM-HMM SETTINGS
@@ -65,7 +76,8 @@ STATE_TYPE = 'engaged'
 STATE_DEF = 'previous'
 
 # File paths for GLM-HMM state data
-GLMHMM_BASE_DIR = Path('/Users/natemiska/int-brain-lab/GLM-HMM')
+GLMHMM_BASE_DIR = Path(os.environ.get(
+    'MISKA_GLMHMM_DIR', Path.home() / 'int-brain-lab' / 'GLM-HMM'))
 GLMHMM_STATES_FILE = GLMHMM_BASE_DIR / 'all_subject_states.csv'
 GLMHMM_ENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'engaged_prevtrial_indices.pkl'
 GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pkl'
@@ -274,3 +286,13 @@ PLOT_ML_LIMITS = (-3.7, 3.7)      # ML extent (both hemispheres)
 # This toggle is only used as a fallback when PLOT_ML_LIMITS is None.
 # If PLOT_ML_LIMITS is set explicitly (as above), the explicit limits win.
 SHOW_RIGHT_HEMISPHERE_ONLY = False
+
+
+# Declarative manuscript profile override. scripts/reproduce.py sets these
+# environment variables; the scientific computation itself is unchanged.
+if os.environ.get('MISKA_PROFILE_ID'):
+    _repo_root = Path(__file__).resolve().parents[1]
+    if str(_repo_root) not in sys.path:
+        sys.path.insert(0, str(_repo_root))
+    from scripts.profile_runtime import apply_runtime_profile
+    PROFILE_RUNTIME = apply_runtime_profile(globals(), 'zapit')

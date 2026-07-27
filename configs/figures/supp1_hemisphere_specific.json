@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "profile_id": "supp1_hemisphere_specific",
+  "figure": "Supplementary Figure 1",
+  "label": "SNr behavioral optogenetics by stimulated hemisphere",
+  "pipeline": "opto_behavior",
+  "entrypoint": "opto_analysis/opto_analysis.py",
+  "status": "ready",
+  "metadata_source": "metadata_final/metadata_opto_behavior.py",
+  "selection": {
+    "Stimulation_Params": ["QPRE", "QPRE*"],
+    "Mouse_ID": ["SWC_NM_004", "SWC_NM_008", "SWC_NM_011", "SWC_NM_012", "SWC_NM_018", "SWC_NM_016", "SWC_NM_080", "SWC_NM_096", "SWC_NM_103", "SWC_NM_113"],
+    "Pulse_Params": ["cont"],
+    "Brain_Region": ["SNr"]
+  },
+  "glmhmm": {"applicable": true, "enabled": true, "n_states": 2, "state_type": "engaged", "state_definition": "previous"},
+  "parameters": {"BASELINE_PERFORMANCE_THRESHOLD": 0.8, "STIM_PERFORMANCE_THRESHOLD": 0, "MIN_NUM_TRIALS": 0, "MIN_BIAS_THRESHOLD": 0.5, "RT_THRESHOLD": 100, "MIN_STIM_TRIALS": 20, "ONLY_INCLUDE_BIAS_TRIALS": true},
+  "output": {"figure_prefix": "supp1_snr_hemisphere"},
+  "runs": [
+    {"run_id": "left", "selection_overrides": {"Hemisphere": ["left"]}, "output_overrides": {"figure_prefix": "supp1_snr_hemisphere_left"}},
+    {"run_id": "right", "selection_overrides": {"Hemisphere": ["right"]}, "output_overrides": {"figure_prefix": "supp1_snr_hemisphere_right"}},
+    {"run_id": "both", "selection_overrides": {"Hemisphere": ["both"]}, "output_overrides": {"figure_prefix": "supp1_snr_hemisphere_both"}}
+  ]
+}

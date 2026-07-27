@@ -1,0 +1,29 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local ONE/IBL caches and machine-specific data
+Downloads/
+ONE/
+alyx.internationalbrainlab.org/
+annotation_*.nrrd
+annotation_volume_*.npy
+average_template_*.nrrd
+
+# Expensive local analysis products. Public derived-data bundles should use
+# the documented CSV/JSON/NPZ interchange format under derived_data/.
+outputs/
+figures_generated/
+*.pkl
+*.pickle
+
+# Keep the derived-data schema/documentation while excluding local bundles
+# until they have been intentionally selected for an archival release.
+derived_data/*
+!derived_data/README.md
+!derived_data/.gitkeep

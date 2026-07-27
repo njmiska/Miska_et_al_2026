@@ -194,10 +194,10 @@ def generate_pseudo_sessions(trials, num_pseudo_sessions = 1000, filterval = 10)
     pseudo_20_index_filtered = []
     pseudo_80_index_filtered = []
 
-    for k in range(num_pseudo_sessions):     
+    for k in range(num_pseudo_sessions):
         pseudo_trials.append(list(generate_pseudo_blocks(np.size(trials.feedback_times))))
         pseudo_20_index_filtered_vals = np.zeros((1, np.size(trials.feedback_times)), dtype=int)
-        pseudo_80_index_filtered_vals = np.zeros((1, np.size(trials.feedback_times)), dtype=int)                   
+        pseudo_80_index_filtered_vals = np.zeros((1, np.size(trials.feedback_times)), dtype=int)
         previous_trial_block_ID = 0.5
         current_trial_length = 0
         for l in range(0, np.size(pseudo_trials[k])):
@@ -226,7 +226,7 @@ def isbiasblockselective_02(current_unit_spike_times, trials, excitation_trials_
                          pseudo_20_index_filtered, pseudo_80_index_filtered,
                          blocklength_filterval = 10, before_gocue_start_time = 0.4, before_gocue_end_time = 0.05,
                          BS_pval_threshold = 0.05):
- 
+
     fr_per_trial = np.empty((1, np.size(trials.probabilityLeft)))
     fr_per_trial[:] = np.nan
     fr_per_trial = fr_per_trial[0]
@@ -242,7 +242,7 @@ def isbiasblockselective_02(current_unit_spike_times, trials, excitation_trials_
         numspikes_current_trial = numspikes_current_trial[0]
         numspikes_current_trial = np.size(numspikes_current_trial)
         fr_per_trial[k] = numspikes_current_trial/(before_gocue_start_time - before_gocue_end_time)
-        
+
         if k < 90:
             continue
         if k == 90:
@@ -308,7 +308,7 @@ def isbiasblockselective_02(current_unit_spike_times, trials, excitation_trials_
     num_pseudo_blocks = np.size(pseudo_80_index_filtered)
     pseudo_pvals = np.empty(num_pseudo_blocks)
     pseudo_pvals[:] = np.nan
-    for k in range(num_pseudo_blocks):     
+    for k in range(num_pseudo_blocks):
         fr_80_trials_pseudo = fr_per_trial[pseudo_80_index_filtered[k]]
         fr_20_trials_pseudo = fr_per_trial[pseudo_20_index_filtered[k]]
 
@@ -328,9 +328,9 @@ def isbiasblockselective_02(current_unit_spike_times, trials, excitation_trials_
 
 def isbiasblockselective_03(current_unit_spike_times, trials_probabilityLeft, trials_goCue_times, excitation_trials_numbers,inhibition_trials_numbers,nonstim_trials_numbers,
                          pseudo_20_index_filtered, pseudo_80_index_filtered,
-                         blocklength_filterval = 10, before_gocue_start_time = 0.4, before_gocue_end_time = 0.05, 
+                         blocklength_filterval = 10, before_gocue_start_time = 0.4, before_gocue_end_time = 0.05,
                          BS_pval_threshold = 0.05):
- 
+
     fr_per_trial = np.empty((1, np.size(trials_probabilityLeft)))
     fr_per_trial[:] = np.nan
     fr_per_trial = fr_per_trial[0]
@@ -349,7 +349,7 @@ def isbiasblockselective_03(current_unit_spike_times, trials_probabilityLeft, tr
         numspikes_current_trial = numspikes_current_trial[0]
         numspikes_current_trial = np.size(numspikes_current_trial)
         fr_per_trial[k] = numspikes_current_trial/(before_gocue_start_time - before_gocue_end_time)
-        
+
         if k < 90:
             continue
         if k == 90:
@@ -450,7 +450,7 @@ def isbiasblockselective_03(current_unit_spike_times, trials_probabilityLeft, tr
     num_pseudo_blocks = len(pseudo_80_index_filtered)
     pseudo_pvals = np.empty(num_pseudo_blocks)
     pseudo_pvals[:] = np.nan
-    for k in range(num_pseudo_blocks):     
+    for k in range(num_pseudo_blocks):
         fr_80_trials_pseudo = fr_per_trial[pseudo_80_index_filtered[k]]
         fr_20_trials_pseudo = fr_per_trial[pseudo_20_index_filtered[k]]
 
@@ -460,7 +460,7 @@ def isbiasblockselective_03(current_unit_spike_times, trials_probabilityLeft, tr
 
     pct50_pseudo = np.percentile(pseudo_pvals,50)
     pct95_pseudo = np.percentile(pseudo_pvals,5)
-    
+
     #how significance assessed
     # Apply the FDR correction to the set of pseudo p-values
     reject, fdr_pvals, _, _ = multipletests(pseudo_pvals, alpha=BS_pval_threshold, method='fdr_bh')
@@ -481,9 +481,9 @@ def isbiasblockselective_03(current_unit_spike_times, trials_probabilityLeft, tr
 
 def isbiasblockselective_05(current_unit_spike_times, trials_probabilityLeft, trials_goCue_times, inhibition_trials_numbers, nonstim_trials_numbers,
                          pseudo_20_index_filtered, pseudo_80_index_filtered, quiescent_period_lengths, ###trials.quiescencePeriod
-                         blocklength_filterval = 10, before_gocue_end_time = 0.05, 
+                         blocklength_filterval = 10, before_gocue_end_time = 0.05,
                          BS_pval_threshold = 0.05):
- 
+
     fr_per_trial = np.empty((1, np.size(trials_probabilityLeft)))
     fr_per_trial[:] = np.nan
     fr_per_trial = fr_per_trial[0]
@@ -501,7 +501,7 @@ def isbiasblockselective_05(current_unit_spike_times, trials_probabilityLeft, tr
         numspikes_current_trial = numspikes_current_trial[0]
         numspikes_current_trial = np.size(numspikes_current_trial)
         fr_per_trial[k] = numspikes_current_trial/(quiescent_period_lengths[k] - before_gocue_end_time)
-        
+
         if k < 90:
             continue
         if k == 90:
@@ -587,7 +587,7 @@ def isbiasblockselective_05(current_unit_spike_times, trials_probabilityLeft, tr
     num_pseudo_blocks = len(pseudo_80_index_filtered)
     pseudo_pvals = np.empty(num_pseudo_blocks)
     pseudo_pvals[:] = np.nan
-    for k in range(num_pseudo_blocks):     
+    for k in range(num_pseudo_blocks):
         fr_80_trials_pseudo = fr_per_trial[pseudo_80_index_filtered[k]]
         fr_20_trials_pseudo = fr_per_trial[pseudo_20_index_filtered[k]]
 
@@ -676,6 +676,9 @@ def isbiasblockselective_perm_vector(
     before_gocue_end_time=0.01,
     alpha=0.05,
     test_statistic="rankz",       # "rankz" (|Wilcoxon z|) or "median_diff"
+    pseudo_restrict_to_nonstim=True,  # restrict pseudo null to the SAME nonstim
+                                      # trial set as the real test (fixes the
+                                      # sample-size mismatch that crushed detection)
 ):
     """
     Bias-selectivity test with:
@@ -760,9 +763,17 @@ def isbiasblockselective_perm_vector(
     n_pseudo = min(len(pseudo_80_index_filtered), len(pseudo_20_index_filtered))
     stat_pseudo = np.full(n_pseudo, np.nan, dtype=float)
 
+    # The real statistic is computed on NONSTIM trials only. For a fair null the
+    # pseudo statistic must use the same trial set with shuffled block labels;
+    # otherwise the pseudo (over all trials) has more trials -> inflated |z| ->
+    # the real value rarely exceeds it -> detection collapses to chance.
+    _ns_arr = np.asarray(nonstim_trials_numbers, dtype=int)
     for i in range(n_pseudo):
         idx80 = np.asarray(pseudo_80_index_filtered[i], dtype=int)
         idx20 = np.asarray(pseudo_20_index_filtered[i], dtype=int)
+        if pseudo_restrict_to_nonstim:
+            idx80 = idx80[np.isin(idx80, _ns_arr)]
+            idx20 = idx20[np.isin(idx20, _ns_arr)]
         fr80p = fr_per_trial[idx80] if idx80.size else np.array([])
         fr20p = fr_per_trial[idx20] if idx20.size else np.array([])
         if fr80p.size < 3 or fr20p.size < 3:
@@ -792,35 +803,35 @@ def get_drift_indices(X, block, drift_threshold=0.4):
     """
     Identifies neurons where firing rate correlates stronger with time (drift)
     than with the block structure.
-    
+
     X: (n_trials, n_time, n_neurons)
     block: (n_trials,) boolean or int array of block identity
     drift_threshold: correlation with time above which a unit is suspect
     """
     # 1. Get mean firing rate per trial for every neuron
     # Shape: (n_trials, n_neurons)
-    fr_per_trial = np.mean(X, axis=1) 
-    
+    fr_per_trial = np.mean(X, axis=1)
+
     n_neurons = X.shape[2]
     trial_indices = np.arange(X.shape[0])
-    
+
     drift_unit_ids = []
-    
+
     for i in range(n_neurons):
         fr = fr_per_trial[:, i]
-        
+
         # 2. Correlate FR with Time (Trial Number)
         # We use Spearman because drift isn't always perfectly linear
         rho_time, _ = spearmanr(fr, trial_indices)
-        
+
         # 3. Correlate FR with Block Identity
         rho_block, _ = spearmanr(fr, block)
-        
+
         # 4. Decision Rule:
         # If the unit is highly correlated with time...
         if abs(rho_time) > drift_threshold:
             # ...AND it is MORE correlated with time than with the block
             if abs(rho_time) > abs(rho_block):
                 drift_unit_ids.append(i)
-                
+
     return np.array(drift_unit_ids)
