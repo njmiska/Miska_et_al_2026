@@ -1,0 +1,33 @@
+{
+  "dataset_requests": 5481,
+  "external_assets": 8,
+  "identifiers_by_type": {
+    "eid": 1239,
+    "pid": 75
+  },
+  "metadata_rows": 1368,
+  "profile_counts": {
+    "figure1_snr_glmhmm": 37,
+    "figure1_zi_glmhmm": 55,
+    "figure2_snr_bs_no_glmhmm": 25,
+    "figure3_stn_glmhmm": 55,
+    "figure3_vls_d1_glmhmm": 129,
+    "figure3_vls_d2_glmhmm": 139,
+    "figure4_zapit_glmhmm": 267,
+    "supp1_bwm_bias": 0,
+    "supp1_glmhmm_states": 37,
+    "supp1_hemisphere_specific": 137,
+    "supp1_optogenetic_validation": 11,
+    "supp1_snr_no_glmhmm": 37,
+    "supp1_state_occupancy": 0
+  },
+  "profile_runs": 19,
+  "profiles": 13,
+  "resolved_pid_eids": 74,
+  "schema_version": 1,
+  "unique_identifiers": 1314,
+  "unresolved_pid_eids": 1,
+  "unresolved_pid_identifiers": [
+    "11f2f5b2-d542-4b58-9759-036e723c1d65"
+  ]
+}

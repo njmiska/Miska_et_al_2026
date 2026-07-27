@@ -1,0 +1,9 @@
+asset_group,path_or_name,required_by,release_action
+glmhmm,all_subject_states.csv (currently a pickled object despite suffix),all GLM-HMM profiles,Export to a documented non-pickle CSV/NPZ bundle
+glmhmm,engaged_prevtrial_indices.pkl,previous-trial engaged-state profiles,Export indices to NPZ plus JSON metadata
+zapit,zapit/zapit_trials.yml,figure4_zapit_glmhmm,Already tracked; validate coverage and document schema
+zapit,zapit/zapit_log.yml,figure4_zapit_glmhmm,Already tracked; validate coordinates and document schema
+atlas,Allen CCF annotation volume and structure tree,figure4_zapit_glmhmm,Document authoritative download URL/version; do not vendor cache
+derived_data,figure-level CSV/JSON/NPZ bundles,all figures,Create after final output audit; archive large bundles outside GitHub
+source_blocker,Supplementary Figure 1 state-occupancy analysis,supp1_state_occupancy,"Obtain colleague source, exact cohort, and accessed data families"
+metadata_blocker,Final BWM bias-selectivity cohort,supp1_bwm_bias,Freeze exact EIDs/PIDs and selection criteria in metadata_final

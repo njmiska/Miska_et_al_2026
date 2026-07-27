@@ -40,6 +40,7 @@ from pathlib import Path
 # Local imports
 from config import (
     ALYX_BASE_URL,
+    ONE_CACHE_DIR,
     FIGURE_SAVE_PATH, FIGURE_PREFIX, FIGURE_FORMAT,
     SAVE_FIGURES, TITLE_TEXT, PLOT_FOR_PAPER,
     FLAG_FAILED_LOADS,
@@ -88,7 +89,7 @@ plt.rcParams['ps.fonttype'] = 42
 # INITIALIZATION
 # =============================================================================
 
-one = ONE(base_url='https://alyx.internationalbrainlab.org', cache_dir=Path.home() / 'Downloads' / 'ONE' / 'alyx.internationalbrainlab.org')
+one = ONE(base_url=ALYX_BASE_URL, cache_dir=ONE_CACHE_DIR)
 
 # Session selection
 active_filters = {k: v for k, v in SESSION_FILTERS.items() if v is not None}

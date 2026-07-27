@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "profile_id": "figure2_snr_bs_no_glmhmm",
+  "figure": "Figure 2",
+  "label": "SNr inhibition and downstream bias-selective firing",
+  "pipeline": "ephys_bs",
+  "entrypoint": "ephys_analysis/SNr_inhibition_BS_downstream_effect.py",
+  "postprocess_entrypoint": "ephys_analysis/BS_postprocess.py",
+  "status": "ready_source_snapshot",
+  "metadata_source": "metadata_final/metadata_optostim_new.py",
+  "selection": {
+    "brain region": ["SNr"],
+    "condition": ["ipsi"]
+  },
+  "glmhmm": {
+    "applicable": true,
+    "enabled": false,
+    "n_states": null,
+    "state_type": null,
+    "state_definition": null
+  },
+  "parameters": {
+    "ALIGNMENTS": ["Laser onset", "Feedback"],
+    "NORMALIZATION": "whole_control_scalar",
+    "ORIENTATION": "qp_preference",
+    "ESTIMATOR": "all_trials"
+  },
+  "output": {"figure_prefix": "fig2_snr_bs_no_glmhmm"},
+  "notes": "The source snapshot is included. A full raw-data rerun still requires the documented IBL and GLM-HMM environment plus regression validation. CD_analysis_midbrain.py is intentionally excluded from this profile."
+}

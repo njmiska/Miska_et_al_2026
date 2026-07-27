@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "profile_id": "figure3_vls_d2_glmhmm",
+  "figure": "Figure 3",
+  "label": "VLS D2 behavioral optogenetics",
+  "pipeline": "opto_behavior",
+  "entrypoint": "opto_analysis/opto_analysis.py",
+  "status": "ready",
+  "metadata_source": "metadata_final/metadata_opto_behavior.py",
+  "selection": {
+    "Stimulation_Params": ["QPRE", "QPRE*"],
+    "Mouse_ID": ["SWC_NM_065", "SWC_NM_109", "SWC_NM_108", "SWC_NM_089", "SWC_NM_087", "SWC_NM_083", "SWC_NM_107"],
+    "Pulse_Params": ["50hz", "cont_c"],
+    "Opsin": ["ChR2"],
+    "Brain_Region": ["VLS"]
+  },
+  "glmhmm": {"applicable": true, "enabled": true, "n_states": 2, "state_type": "engaged", "state_definition": "previous"},
+  "parameters": {"BASELINE_PERFORMANCE_THRESHOLD": 0.8, "STIM_PERFORMANCE_THRESHOLD": 0, "MIN_NUM_TRIALS": 0, "MIN_BIAS_THRESHOLD": 0.5, "RT_THRESHOLD": 100, "MIN_STIM_TRIALS": 20, "ONLY_INCLUDE_BIAS_TRIALS": true},
+  "output": {"figure_prefix": "fig3_vls_d2_glmhmm"}
+}

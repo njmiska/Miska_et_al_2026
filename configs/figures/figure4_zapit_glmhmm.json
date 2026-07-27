@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "profile_id": "figure4_zapit_glmhmm",
+  "figure": "Figure 4",
+  "label": "ZAPIT laser-scanning optogenetics",
+  "pipeline": "zapit",
+  "entrypoint": "zapit/zapit_analysis.py",
+  "status": "ready",
+  "metadata_source": "metadata_final/metadata_zapit.py",
+  "selection": {"Stimulation_Params": ["zapit"], "Brain_Region": ["motor_bilateral"]},
+  "glmhmm": {"applicable": true, "enabled": true, "n_states": 2, "state_type": "engaged", "state_definition": "previous"},
+  "parameters": {"BASELINE_PERFORMANCE_THRESHOLD": 0.8, "STIM_PERFORMANCE_THRESHOLD": 0.8, "MIN_NUM_TRIALS": 150, "MIN_BIAS_THRESHOLD_ZAPIT": 1.0, "RT_THRESHOLD": 100},
+  "output": {"figure_prefix": "fig4_zapit_glmhmm"}
+}
