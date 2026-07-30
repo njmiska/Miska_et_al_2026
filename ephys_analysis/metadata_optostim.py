@@ -66,7 +66,7 @@ pids_list_ZI_directstim = ['c2f05bd0-bd6e-4d9c-8c34-aeb086f77045', '1285d34a-d2a
                            'ae8674d7-c682-4f6e-a79c-a695f2f0b13b'] #SWC_NM_032 18/1
 pids_list_SNr_directstim = ['e91b783b-ec23-4963-9cc0-601c4d093d0f', '9fedd1c6-33eb-48b6-b508-8deebe3ee44c', #SWC_NM_021 SNr 23/3/22, #SWC_NM_027 8/9/22 003
                             # '216e8284-66ea-4e2b-8033-417fea3e9f71'] #SWC_NM_027 7/9/22
-                            '11f2f5b2-d542-4b58-9759-036e723c1d65'] #SWC_NM_030
+                            'a0d0e752-45e6-4728-85f7-6c57945b257b'] #SWC_NM_030; PID for EID 11f2f5b2-d542-4b58-9759-036e723c1d65
 ### Add SWC_NM_039??
 
 excitation_trials_range_list_SNr_directstim = [list(range(54,138)) + list(range(193,276)) + list(range(358,403)), #SWC_NM_021 SNr 23/3/22
