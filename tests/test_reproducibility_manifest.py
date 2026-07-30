@@ -81,6 +81,31 @@ class ReproducibilityManifestTests(unittest.TestCase):
                 self.assertEqual(
                     len(identifiers), expected[profile["profile_id"]])
 
+    def test_direct_stimulation_uses_corrected_swc_nm_030_pid(self):
+        profile = get_profile("supp1_optogenetic_validation")
+        rows = resolve_profile(profile)
+        snr_rows = [
+            row for row in rows if row["condition"] == "SNr_directstim"
+        ]
+        pids = {row["PID"] for row in snr_rows}
+
+        corrected_pid = "a0d0e752-45e6-4728-85f7-6c57945b257b"
+        parent_eid = "11f2f5b2-d542-4b58-9759-036e723c1d65"
+        self.assertEqual(len(snr_rows), 3)
+        self.assertIn(corrected_pid, pids)
+        self.assertNotIn(parent_eid, pids)
+
+        corrected_row = next(
+            row for row in snr_rows if row["PID"] == corrected_pid
+        )
+        self.assertEqual(
+            corrected_row["opto inhibition trials"],
+            list(range(101, 208)) + list(range(335, 364)),
+        )
+        self.assertEqual(
+            corrected_row["opto excitation trials"], list(range(208, 335))
+        )
+
     def test_known_incomplete_profiles_are_explicit(self):
         profiles = {p["profile_id"]: p for p in load_profiles()}
         self.assertEqual(

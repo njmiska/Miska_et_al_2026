@@ -3,6 +3,10 @@
 The trial lists remain defined in the historical ephys metadata module so there
 is one exact source of truth.  This adapter exposes them in the same row-based
 shape used by the public-release manifest.
+
+The historical SWC_NM_030 entry has been corrected to probe insertion PID
+``a0d0e752-45e6-4728-85f7-6c57945b257b``.  The UUID previously occupying that
+slot (``11f2f5b2-d542-4b58-9759-036e723c1d65``) is its parent session EID.
 """
 
 from ephys_analysis.metadata_optostim import (
