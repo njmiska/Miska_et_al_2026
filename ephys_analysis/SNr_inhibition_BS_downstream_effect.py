@@ -1,3 +1,13 @@
+
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
 from datetime import datetime, timezone
 # import json
 import numpy as np
@@ -23,7 +33,7 @@ from pathlib import Path
 from time import perf_counter
 from types import SimpleNamespace
 
-from miska_analysis.functions_optostim import (
+from functions_optostim import (
     generate_pseudo_sessions,
     isbiasblockselective_perm_vector,
     peri_event_time_histogram,
@@ -38,13 +48,6 @@ from optostim_preprocessing import (
     apply_glmhmm_opto_trial_policy, coerce_glmhmm_engaged_indices,
 )
 from metadata_optostim_new import insertions as optostim_insertions
-
-# GLM-HMM engagement labels (shared with the CD pipeline).
-sys.path.append('/Users/natemiska/int-brain-lab/GLM-HMM')
-from psychometric_utils import get_glmhmm_indices
-import pickle
-with open("/Users/natemiska/int-brain-lab/GLM-HMM/all_subject_states.csv", 'rb') as _pf:
-    state_probability = pickle.load(_pf)
 
 # All user-tunable options, the condition registry, and the per-PID trial
 # exclusions now live in BS_config.py.
@@ -81,13 +84,19 @@ from BS_config import (
     compute_recorded_region, compute_min_IBL_label, compute_min_firing_rate, bs_output_path,
     bs_definition_trial_mode,
 )
+# Load state data only when this analysis actually enables GLM-HMM filtering.
+from scripts.legacy_state_indices import get_glmhmm_indices
+from scripts.state_io import load_states
+import pickle
+state_probability = load_states(states_file(_runtime_paths)) if use_GLMHMM_engaged_indices == 1 else {}
+
 # (metadata_optostim pid-lists are no longer imported here; the post-analysis
 #  masks now filter on the 'hemisphere' column added to clusters_info_DF.)
 
 # one = ONE(base_url='https://alyx.internationalbrainlab.org')
 # one=ONE(mode='remote')
 
-one = ONE(base_url='https://alyx.internationalbrainlab.org', cache_dir=Path.home() / '/Users/natemiska/Downloads/ONE/alyx.internationalbrainlab.org')
+one = ONE(base_url='https://alyx.internationalbrainlab.org', cache_dir=_runtime_paths['one-cache-dir'])
 # temporarily uses local cache
 
 ba = AllenAtlas()

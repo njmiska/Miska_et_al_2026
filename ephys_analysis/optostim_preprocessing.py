@@ -57,7 +57,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Shared analysis helpers (already imported by both pipelines today).
-from miska_analysis.functions_optostim import get_drift_indices
+from functions_optostim import get_drift_indices
 from waveform_classify import classify_and_plot_axonal_units
 
 

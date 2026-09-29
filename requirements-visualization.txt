@@ -1,0 +1,4 @@
+# Optional Plotly section in bias_selectivity_analysis/visualize_BS.py.
+# Absent from iblenv; version observed in the local base environment.
+-r requirements.txt
+plotly==5.22.0

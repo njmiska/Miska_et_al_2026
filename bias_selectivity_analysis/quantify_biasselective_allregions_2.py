@@ -1,3 +1,13 @@
+
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
 import numpy as np 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -15,7 +25,7 @@ from scipy.stats import ranksums
 from statsmodels.stats.multitest import multipletests
 
 import sys
-sys.path.append('/Users/natemiska/python/bias_coding')
+sys.path.insert(0, str(_Path(_path_root) / 'ephys_analysis'))
 from functions_optostim import signed_contrast, peri_event_time_histogram, generate_pseudo_sessions, isbiasblockselective_perm_vector
 
 ba = AllenAtlas()
@@ -23,7 +33,7 @@ br = BrainRegions()
 ###currently manually defining which to use
 
 # one = ONE(base_url='https://alyx.internationalbrainlab.org')
-one = ONE(base_url='https://alyx.internationalbrainlab.org', cache_dir=Path.home() / 'Nates_Data/ONE/alyx.internationalbrainlab.org')
+one = ONE(base_url='https://alyx.internationalbrainlab.org', cache_dir=_runtime_paths['one-cache-dir'])
 # temporarily uses local cache
 
 def filter_trials(stim_choice, stim_contrast, stim_side):
@@ -114,7 +124,8 @@ aligned_pids = one.alyx.rest('insertions', 'list', django=ins_str_query) ### sat
 # aligned_pids = one.search_insertions(datasets='spikes.times.npy', project='brainwide') ### all BWM sessions, without behaviour criteria
 
 aligned_pids_df = pd.DataFrame(aligned_pids)
-aligned_pids_df.to_pickle('~/python/saved_figures/' + 'aligned_pids_df_all' + '.pkl')
+_runtime_paths['output-root'].mkdir(parents=True, exist_ok=True)
+aligned_pids_df.to_pickle(_runtime_paths['output-root'] / 'aligned_pids_df_all.pkl')
    
     # np.save('aligned_eids.npy', aligned_eids)
     # np.save('aligned_probe_labels.npy', aligned_eids)

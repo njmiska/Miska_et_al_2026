@@ -1,0 +1,9 @@
+name: miska-2026
+channels:
+  - defaults
+dependencies:
+  - python=3.13.9
+  - pip
+  - pip:
+      - -r requirements.txt
+# Install the pinned ssm checkout separately after these build dependencies.

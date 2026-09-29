@@ -271,12 +271,12 @@ def load_stim_locations_coordinates(file_path):
 
 def load_glmhmm_data(states_file, engaged_prev_file=None, disengaged_prev_file=None):
     """
-    Load GLM-HMM state probability data from pickle files.
+    Load GLM-HMM state probabilities from NPZ or legacy pickle files.
 
     Parameters
     ----------
     states_file : str or Path
-        Path to all_subject_states.csv (pickle).
+        Path to a portable .npz or trusted .pkl (legacy .csv pickle supported).
     engaged_prev_file : str or Path, optional
         Path to engaged_prevtrial_indices.pkl.
     disengaged_prev_file : str or Path, optional
@@ -291,8 +291,13 @@ def load_glmhmm_data(states_file, engaged_prev_file=None, disengaged_prev_file=N
     disengaged_prev : dict or None
         Previous-trial disengaged indices.
     """
-    with open(states_file, 'rb') as f:
-        state_probability = pickle.load(f)
+    import sys
+    from pathlib import Path
+    root = str(Path(__file__).resolve().parents[1])
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    from scripts.state_io import load_states
+    state_probability = load_states(states_file)
 
     engaged_prev = None
     disengaged_prev = None

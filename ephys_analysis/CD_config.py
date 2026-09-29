@@ -8,6 +8,16 @@ To run a different analysis (e.g., restrict to SNr, switch alignments, toggle
 drift removal), edit the values below and rerun the analysis script.
 """
 
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
+
 # =========================================================================
 # Dataset selection
 # =========================================================================
@@ -417,7 +427,7 @@ DEPTH_THRESHOLD_OVERRIDES = {
 # Output paths
 # =========================================================================
 save_figures = 1
-figures_path = '/Users/natemiska/Desktop/cd_figures'
+figures_path = str(_runtime_paths['output-root'] / 'cd_figures')
 individual_pid_prefix = '8020_NOGLMHMM_optoprior_IBL23_drift35_5050'
 
 # Optional run label for population pickle filenames. Leave '' or None for the

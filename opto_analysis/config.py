@@ -14,6 +14,16 @@ Toggle USE_GLMHMM to switch between:
   - False: Use traditional RT, performance, and bias exclusion criteria
 """
 
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
+
 import os
 import sys
 import numpy as np
@@ -28,12 +38,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 # Output directory for figures
-FIGURE_SAVE_PATH = BASE_DIR.parent / 'outputs' / 'opto_analysis'
+FIGURE_SAVE_PATH = _runtime_paths['output-root'] / 'opto_analysis'
 
-ONE_CACHE_DIR = Path(os.environ.get(
-    'MISKA_ONE_CACHE_DIR',
-    Path.home() / 'Downloads' / 'ONE' / 'alyx.internationalbrainlab.org',
-))
+ONE_CACHE_DIR = _runtime_paths['one-cache-dir']
 
 # IBL Alyx database URL
 ALYX_BASE_URL = 'https://alyx.internationalbrainlab.org'
@@ -60,9 +67,8 @@ STATE_TYPE = 'engaged'
 STATE_DEF = 'previous'
 
 # File paths for GLM-HMM state data
-GLMHMM_BASE_DIR = Path(os.environ.get(
-    'MISKA_GLMHMM_DIR', Path.home() / 'int-brain-lab' / 'GLM-HMM'))
-GLMHMM_STATES_FILE = GLMHMM_BASE_DIR / 'all_subject_states.csv'
+GLMHMM_BASE_DIR = _runtime_paths['glmhmm-dir']
+GLMHMM_STATES_FILE = states_file(_runtime_paths)
 GLMHMM_ENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'engaged_prevtrial_indices.pkl'
 GLMHMM_DISENGAGED_PREV_FILE = GLMHMM_BASE_DIR / 'disengaged_prevtrial_indices.pkl'
 

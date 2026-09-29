@@ -1,0 +1,60 @@
+{
+  "archive_audit": {
+    "subjects": 64,
+    "valid_sessions": 1549,
+    "empty_entries": 32,
+    "malformed_entries": [],
+    "examples": [
+      [
+        "SWC_AY_006",
+        "a95342b6-34e0-4986-81c9-3da3b2d3d552",
+        734,
+        4
+      ],
+      [
+        "SWC_AY_006",
+        "5af8e109-6e6a-4584-ab63-8a9982bd0abf",
+        914,
+        4
+      ],
+      [
+        "SWC_AY_006",
+        "b2c60075-433c-407d-98c1-5c107985c43d",
+        475,
+        4
+      ]
+    ]
+  },
+  "npz_roundtrip": "Exact arrays and dtypes, including all empty entries",
+  "retrieval_entrypoint_regression": [
+    {
+      "subject": "SWC_AY_002",
+      "eid": "30edc331-6d60-410f-b20a-7866b9fab921",
+      "trials": 692,
+      "different_labels": 0,
+      "max_abs_posterior_difference": 3.6415315207705135e-14
+    },
+    {
+      "subject": "SWC_AY_003",
+      "eid": "03caca70-1ce1-45fe-a646-d31f6011d8f6",
+      "trials": 894,
+      "different_labels": 0,
+      "max_abs_posterior_difference": 4.884981308350689e-14
+    },
+    {
+      "subject": "SWC_AY_005",
+      "eid": "061bbb33-b7fb-4a89-9890-d65e111bb84b",
+      "trials": 806,
+      "different_labels": 0,
+      "max_abs_posterior_difference": 5.67323965583455e-14
+    }
+  ],
+  "regression_method": "Offline ONE adapter reading saved GLM-HMM trials.pqt, original ssm source, global-fit path only",
+  "tests_passed": 15,
+  "numpy_versions_tested": [
+    "2.3.5",
+    "2.2.0"
+  ],
+  "compatible_dependency_resolution": "pip --dry-run --ignore-installed succeeded",
+  "new_lock_platform": "macOS-14.6-arm64-arm-64bit-Mach-O"
+}

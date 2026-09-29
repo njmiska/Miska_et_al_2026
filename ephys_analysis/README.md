@@ -27,11 +27,12 @@ The nine scientific Python files were copied from the active working analysis
 on 2026-07-27 without changing calculations (trailing whitespace was
 normalized). Their repository hashes are in `SOURCE_SNAPSHOT.json`.
 
-This snapshot still exposes several historical absolute paths and expects the
-author's IBL/Brainbox/GLM-HMM environment. For that reason the generic
+The 2026-09-28 adaptation replaces active machine-specific paths with the shared
+JSON configuration and records the current environment (see the repository README).
+Original and adapted file hashes are retained in `SOURCE_SNAPSHOT.json`. The generic
 `scripts/reproduce.py` command permits a `--dry-run` configuration preview but
 does not yet launch the expensive Figure 2 raw analysis. The next migration
-step is a path-only adapter followed by one-PID and full-cohort numerical
+step is one-PID and full-cohort numerical
 regression checks. This explicit guard prevents a command from implying
 reproducibility before the scientific output has been verified.
 
