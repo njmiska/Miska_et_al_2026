@@ -1,3 +1,13 @@
+
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
 # import pickle
 import pandas as pd
 import numpy as np
@@ -7,9 +17,8 @@ br = BrainRegions()
 
 pd.set_option('display.max_rows', None)
 
-# with open('/Users/natemiska/Documents/python/saved_figures/bs_analysis_allregions_dataframe_V3.pkl','rb') as f:
 #     BS_clusters_dataframe = pickle.load(f)
-BS_clusters_dataframe = pd.read_csv('/Users/natemiska/python/saved_figures/bs_analysis_allregions_dataframe_newanalysis.csv')
+BS_clusters_dataframe = pd.read_csv(_runtime_paths['bias-selectivity-table'])
 
 # only include units with IBLlabel >= some value
 BS_clusters_dataframe = BS_clusters_dataframe.loc[BS_clusters_dataframe['IBLlabel'] >= 1]

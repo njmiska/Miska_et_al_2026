@@ -114,7 +114,8 @@ def apply_runtime_profile(namespace: dict[str, Any], pipeline: str) -> dict[str,
     if glmhmm_dir:
         base = Path(glmhmm_dir).expanduser().resolve()
         namespace["GLMHMM_BASE_DIR"] = base
-        namespace["GLMHMM_STATES_FILE"] = base / "all_subject_states.csv"
+        from scripts.paths import load_paths, states_file
+        namespace["GLMHMM_STATES_FILE"] = states_file(load_paths())
         namespace["GLMHMM_ENGAGED_PREV_FILE"] = base / "engaged_prevtrial_indices.pkl"
         namespace["GLMHMM_DISENGAGED_PREV_FILE"] = base / "disengaged_prevtrial_indices.pkl"
 

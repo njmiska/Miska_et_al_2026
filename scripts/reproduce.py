@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import argparse
 import json
 import shlex
@@ -11,9 +12,11 @@ import sys
 from pathlib import Path
 
 try:
+    from .paths import load_paths
     from .profile_runtime import get_profile, resolve_run, runtime_environment
     from .reproducibility import REPO_ROOT, load_profiles
 except ImportError:
+    from paths import load_paths
     from profile_runtime import get_profile, resolve_run, runtime_environment
     from reproducibility import REPO_ROOT, load_profiles
 
@@ -33,12 +36,19 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("profile_id", nargs="?")
     parser.add_argument("--run", action="append", dest="runs")
-    parser.add_argument("--output-root", type=Path, default=REPO_ROOT / "outputs")
+    parser.add_argument("--output-root", type=Path, default=None)
     parser.add_argument("--glmhmm-dir", type=Path)
     parser.add_argument("--one-cache-dir", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--list", action="store_true")
+    parser.add_argument("--paths-config", type=Path)
     args = parser.parse_args(argv)
+    if args.paths_config:
+        os.environ["MISKA_PATHS_FILE"] = str(args.paths_config.expanduser().resolve())
+    paths = load_paths(overrides={"output-root": args.output_root, "glmhmm-dir": args.glmhmm_dir, "one-cache-dir": args.one_cache_dir})
+    args.output_root = paths["output-root"]
+    args.glmhmm_dir = paths["glmhmm-dir"]
+    args.one_cache_dir = paths["one-cache-dir"]
 
     if args.list:
         for profile in load_profiles():
@@ -65,6 +75,7 @@ def main(argv=None):
             "status": profile["status"],
             "entrypoint": entrypoint,
             "output_dir": str(output_dir),
+            "runtime_paths": {k: str(v) for k, v in paths.items()},
             "selection": resolved["selection"],
             "glmhmm": resolved["glmhmm"],
             "parameters": resolved["parameters"],

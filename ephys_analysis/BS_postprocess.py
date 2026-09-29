@@ -56,6 +56,16 @@ Call available_filter_options() for the same list from Python. The same keys
 can be passed to browse_bs_unit_block_peths(..., restrict={...}).
 """
 
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
+
 import ast
 import hashlib
 import pickle
@@ -98,12 +108,10 @@ UNIT_BLOCK_PETH_LINESTYLES = {
 }
 
 DEFAULT_BS_UNIT_LASER_RESULTS = (
-    '~/python/saved_figures/'
-    'BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl'
+    str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl')
 )
 DEFAULT_BS_UNIT_FEEDBACK_RESULTS = (
-    '~/python/saved_figures/'
-    'BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl'
+    str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl')
 )
 
 # Post-hoc common normalizer for ``norm_mode='qp_control_scalar'``. Units below
@@ -3183,7 +3191,7 @@ def _plot_insertion_bar(summary, stats_df, out_dir, *, title='',
 
 
 def run_insertion_delta_fr_analysis(data, idx, *,
-                                    out_dir='~/python/saved_figures/BS_insertion_delta_fr',
+                                    out_dir=str(_runtime_paths['output-root'] / 'BS_insertion_delta_fr'),
                                     min_units_per_insertion=10,
                                     window_s=None,
                                     norm_mode=None,
@@ -3835,7 +3843,7 @@ def _plot_multilevel_effect_estimation(analysis, model_fit, out_dir, *,
 
 
 def run_multilevel_delta_fr_analysis(
-        data, idx, *, out_dir='~/python/saved_figures/BS_multilevel_delta_fr',
+        data, idx, *, out_dir=str(_runtime_paths['output-root'] / 'BS_multilevel_delta_fr'),
         window_s=None, norm_mode=None, sign_mode=sign_mode_option,
         sign_window_s=DEFAULT_SIGN_WINDOW, min_units_per_insertion=5,
         min_valid_unit_fraction=None, min_reference_sign_agreement=None,
@@ -4233,7 +4241,7 @@ def _lazy_raster_one_and_atlas():
         from one.api import ONE
         _RASTER_ONE = ONE(
             base_url='https://alyx.internationalbrainlab.org',
-            cache_dir=Path('/Users/natemiska/Downloads/ONE/alyx.internationalbrainlab.org'),
+            cache_dir=_runtime_paths['one-cache-dir'],
         )
     if _RASTER_ATLAS is None:
         from iblatlas.atlas import AllenAtlas
@@ -4245,13 +4253,10 @@ def _lazy_glmhmm_helpers():
     global _RASTER_STATE_PROBABILITY
     try:
         import sys
-        glmhmm_path = '/Users/natemiska/int-brain-lab/GLM-HMM'
-        if glmhmm_path not in sys.path:
-            sys.path.append(glmhmm_path)
-        from psychometric_utils import get_glmhmm_indices
+        from scripts.legacy_state_indices import get_glmhmm_indices
         if _RASTER_STATE_PROBABILITY is None:
-            with open('/Users/natemiska/int-brain-lab/GLM-HMM/all_subject_states.csv', 'rb') as f:
-                _RASTER_STATE_PROBABILITY = pickle.load(f)
+            from scripts.state_io import load_states
+            _RASTER_STATE_PROBABILITY = load_states(states_file(_runtime_paths))
         return get_glmhmm_indices, _RASTER_STATE_PROBABILITY
     except Exception as exc:
         print(f'Raster GLM-HMM helper unavailable; using non-GLM-HMM trial set: {exc}')
@@ -4623,7 +4628,7 @@ def export_bs_unit_block_peths(
         pid, unit_number, *,
         laser_data_or_path=DEFAULT_BS_UNIT_LASER_RESULTS,
         feedback_data_or_path=DEFAULT_BS_UNIT_FEEDBACK_RESULTS,
-        output_dir='~/python/saved_figures/BS_example_units',
+        output_dir=str(_runtime_paths['output-root'] / 'BS_example_units'),
         smooth_ms=250, opto_overlay='blocks',
         laser_time_range=None, feedback_time_range=None,
         axis_size=(6.6, 4.5), colors=None, linestyles=None,
@@ -5071,9 +5076,9 @@ if __name__ == '__main__':
     # Matches BS_config.figure_prefix='NOGLMHMM_standard'. Change this if the
     # pipeline run uses a different figure_prefix.
     if alignment == 'laser':
-        RESULTS_PATH = '~/python/saved_figures/BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl'
+        RESULTS_PATH = str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl')
     else:
-        RESULTS_PATH = '~/python/saved_figures/BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl'
+        RESULTS_PATH = str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl')
 
     # RESULTS_PATH = '~/python/saved_figures/BS_all_insertions_GLMHMM_crossfit_LaserOnset.pkl'
     # RESULTS_PATH = '~/python/saved_figures/BS_all_insertions_GLMHMM_crossfit_Feedback.pkl'
@@ -5326,8 +5331,7 @@ if __name__ == '__main__':
         baseline_subtract=False, baseline_window=(-2, 0),
         smooth_ms=300,
         diagnostics_csv=(
-            '~/python/saved_figures/BS_insertion_delta_fr/'
-            '930adc32_unit_diagnostics.csv'),
+            str(_runtime_paths['output-root'] / 'BS_insertion_delta_fr/930adc32_unit_diagnostics.csv')),
     )
 
     # Additional publication-oriented multilevel analysis. The paired unit
@@ -5366,8 +5370,8 @@ if __name__ == '__main__':
 
     # Browse individual bias-selective units once LaserOnset and GoCueOnset
     # pickles have been generated with save_raw_block_peths=1:
-    laser_data = load_results('~/python/saved_figures/BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl')
-    feedback_data = load_results('~/python/saved_figures/BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl')
+    laser_data = load_results(str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_LaserOnset.pkl'))
+    feedback_data = load_results(str(_runtime_paths['output-root'] / 'BS_all_insertions_NOGLMHMM_standard_crossfit_Feedback.pkl'))
     browse_bs_unit_block_peths(laser_data,
         {'Laser onset': laser_data, 'Feedback': feedback_data},
         restrict=dict(brain_region_inhibited='SNr',
@@ -5394,7 +5398,7 @@ if __name__ == '__main__':
         unit_number=286,
         laser_data_or_path=laser_data,
         feedback_data_or_path=feedback_data,
-        output_dir='~/python/saved_figures/BS_example_units',
+        output_dir=str(_runtime_paths['output-root'] / 'BS_example_units'),
         save=True,
         show=False,
         # colors=dict(opto_20='#8FD3FF', opto_80='#008FD5'),
@@ -5519,7 +5523,7 @@ def _allen_beryl_pair_inventory_table(df, include_unknown=False):
 
 
 def list_midbrain_recorded_regions(
-        data_or_path='~/python/saved_figures/BS_all_insertions_ALL_LaserOnset.pkl',
+        data_or_path=str(_runtime_paths['output-root'] / 'BS_all_insertions_ALL_LaserOnset.pkl'),
         *,
         brain_region_inhibited=None,
         condition=None,
@@ -5529,7 +5533,7 @@ def list_midbrain_recorded_regions(
         max_pval_empirical=None,
         include_unknown=False,
         save_csv=True,
-        out_prefix='~/python/saved_figures/BS_midbrain_recorded_region_inventory',
+        out_prefix=str(_runtime_paths['output-root'] / 'BS_midbrain_recorded_region_inventory'),
         max_print_rows=40):
     """Print and optionally save all midbrain Allen/Beryl regions in a BS pickle.
 

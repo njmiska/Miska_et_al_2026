@@ -117,8 +117,6 @@ if USE_GLMHMM:
     print(f"GLM-HMM enabled: n_states={N_STATES}, state_type={STATE_TYPE}, state_def={STATE_DEF}")
     state_probability, _, _ = load_glmhmm_data(
         GLMHMM_STATES_FILE,
-        GLMHMM_ENGAGED_PREV_FILE,
-        GLMHMM_DISENGAGED_PREV_FILE,
     )
 
 

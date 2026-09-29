@@ -27,3 +27,8 @@ figures_generated/
 derived_data/*
 !derived_data/README.md
 !derived_data/.gitkeep
+
+# Shared path configuration contains machine-local paths.
+paths.local.json
+data/
+external/

@@ -17,6 +17,16 @@ need to be edited between runs. Contents:
                                 lookup out of CONDITIONS for the main loop)
 """
 
+# Shared machine-local paths (see scripts/setup_data.py).
+import sys as _path_sys
+from pathlib import Path as _Path
+_path_root = str(_Path(__file__).resolve().parents[1])
+if _path_root not in _path_sys.path:
+    _path_sys.path.insert(0, _path_root)
+from scripts.paths import load_paths, states_file
+_runtime_paths = load_paths()
+
+
 from metadata_optostim import (
     pids_list_SNr_trained,
     pids_list_SNr_contra_trained,
@@ -218,7 +228,7 @@ compute_min_IBL_label = 0/3           # score units with IBL label >= this floor
                                       #  post-hoc and can be raised freely.
 compute_min_firing_rate = 0         # Hz; skip ~silent units. firing_rate is
                                       #  stored so it can be filtered post-hoc.
-bs_output_path = '~/python/saved_figures/BS_all_insertions_' + figure_prefix + '.pkl'
+bs_output_path = str(_runtime_paths['output-root'] / ('BS_all_insertions_' + figure_prefix + '.pkl'))
 
 # =====================================================================
 # 6c. Shared unit-QC cascade (mirrors CD_config; every stage toggleable)
@@ -376,7 +386,7 @@ n_states                      = 2
 # =====================================================================
 save_qc_outputs = 1
 save_figures    = 1
-figures_path    = '/Users/natemiska/Desktop/bs_figures'
+figures_path    = str(_runtime_paths['output-root'] / 'bs_figures')
 
 
 # =====================================================================
